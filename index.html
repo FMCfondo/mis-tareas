@@ -1274,7 +1274,7 @@ async function renderProcList(){
 
 function getCurrentPeriod(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
 function getPeriodLabel(p){const[y,m]=p.split('-');return`${MO[parseInt(m)-1]} ${y}`;}
-function getRecentPeriods(){const periods=[];const n=new Date();for(let i=-1;i<=3;i++){const d=new Date(n.getFullYear(),n.getMonth()+i,1);periods.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return periods;}
+function getRecentPeriods(){const periods=[];const n=new Date();for(let i=-3;i<=12;i++){const d=new Date(n.getFullYear(),n.getMonth()+i,1);periods.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return periods;}
 
 async function openProc(id){
   currentProcId=id;currentPeriod=getCurrentPeriod();
@@ -1303,8 +1303,14 @@ function renderPeriodSelector(){
 async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderProcMatrix();}
 
 async function renderProcMatrix(){
+  const{data:steps}=await db.from('process_steps').select('*').eq('process_id',currentProcId).order('order_index');
   const{data:entities}=await db.from('process_entities').select('*').eq('process_id',currentProcId).eq('active',true).order('order_index');
-  if(!steps||!entities)return;
+  if(!steps||!entities||!steps.length||!entities.length){
+    document.getElementById('proc-summary').innerHTML='';
+    document.getElementById('matrix-head').innerHTML='';
+    document.getElementById('matrix-body').innerHTML='<tr><td style="padding:2rem;color:var(--text3);font-size:13px">No hay pasos o entidades configurados en este proceso.</td></tr>';
+    return;
+  }
   // Get or create run
   let{data:run}=await db.from('process_runs').select('*').eq('process_id',currentProcId).eq('period',currentPeriod).single();
   if(!run){
