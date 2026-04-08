@@ -1227,7 +1227,7 @@ async function renderProcList(){
 
 function getCurrentPeriod(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
 function getPeriodLabel(p){const[y,m]=p.split('-');return`${MO[parseInt(m)-1]} ${y}`;}
-function getRecentPeriods(){const periods=[];const n=new Date();for(let i=-1;i<=3;i++){const d=new Date(n.getFullYear(),n.getMonth()+i,1);periods.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return periods;}
+function getRecentPeriods(){const periods=[];const n=new Date();for(let i=-3;i<=12;i++){const d=new Date(n.getFullYear(),n.getMonth()+i,1);periods.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return periods;}
 
 async function openProc(id){
   currentProcId=id;currentPeriod=getCurrentPeriod();
@@ -1236,7 +1236,7 @@ async function openProc(id){
   const p=procs.find(x=>x.id===id);
   document.getElementById('proc-detail-title').textContent=p?.title||'Proceso';
   renderPeriodSelector();
-  await renderMatrix();
+  await renderProcMatrix();
 }
 
 function showProcList(){
@@ -1253,10 +1253,9 @@ function renderPeriodSelector(){
     periods.map(p=>`<button class="period-btn${p===currentPeriod?' active':''}" onclick="changePeriod('${p}')">${getPeriodLabel(p)}</button>`).join('');
 }
 
-async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderMatrix();}
+async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderProcMatrix();}
 
-async function renderMatrix(){
-  const{data:steps}=await db.from('process_steps').select('*').eq('process_id',currentProcId).order('order_index');
+async function renderProcMatrix(){
   const{data:entities}=await db.from('process_entities').select('*').eq('process_id',currentProcId).eq('active',true).order('order_index');
   if(!steps||!entities)return;
   // Get or create run
@@ -1346,7 +1345,7 @@ async function toggleCheck(stepId,entityId,runId){
   }else{
     await db.from('process_checks').insert({run_id:runId,step_id:stepId,entity_id:entityId,done:true,done_at:new Date().toISOString()});
   }
-  await renderMatrix();
+  await renderProcMatrix();
 }
 
 // PROC MODAL
