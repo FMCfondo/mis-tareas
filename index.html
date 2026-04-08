@@ -325,7 +325,16 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .pps-n{font-size:22px;font-weight:700;font-family:'Playfair Display',serif}
 .pps-l{font-size:11px;color:var(--text2);margin-top:2px;font-weight:500}
 
-/* MODAL PROCESO */
+/* CONFIG */
+.config-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.5rem}
+.config-card-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:1.25rem}
+.cfg-msg{font-size:12px;margin-top:8px;min-height:16px;font-weight:600}
+.cfg-msg.ok{color:var(--green)}.cfg-msg.err{color:var(--red)}
+/* AVANCES */
+.avance-item{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 var(--rs) var(--rs) 0;padding:8px 12px;font-size:12px}
+.avance-date{font-size:10px;color:var(--text3);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.avance-text{color:var(--text2);line-height:1.5}
+.avance-pct{display:inline-block;font-size:10px;font-weight:700;background:var(--accent-l);color:var(--accent);padding:1px 7px;border-radius:10px;margin-top:4px}
 .step-list-editor{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:220px;overflow-y:auto}
 .step-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--rs);border:1px solid var(--border)}
 .step-item input{flex:1;border:none;background:transparent;font-size:13px;font-family:inherit;color:var(--text);outline:none;font-weight:500}
@@ -418,17 +427,18 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="nav-section">Principal</div>
     <button class="ni active" id="nav-hoy" onclick="showPage('hoy')"><span class="ni-ic">☀️</span>Hoy<span class="nbadge" id="badge-hoy" style="display:none">0</span></button>
     <button class="ni" id="nav-lista" onclick="showPage('lista')"><span class="ni-ic">📋</span>Todas las tareas</button>
+    <button class="ni" id="nav-procesos" onclick="showPage('procesos')"><span class="ni-ic">⚙️</span>Procesos</button>
     <div class="nav-section">Vistas</div>
     <button class="ni" id="nav-calendario" onclick="showPage('calendario')"><span class="ni-ic">📅</span>Calendario</button>
     <button class="ni" id="nav-anual" onclick="showPage('anual')"><span class="ni-ic">📆</span>Vista anual</button>
     <button class="ni" id="nav-eisenhower" onclick="showPage('eisenhower')"><span class="ni-ic">🎯</span>Matriz Eisenhower</button>
     <div class="nav-section">Productividad</div>
-    <button class="ni" id="nav-procesos" onclick="showPage('procesos')"><span class="ni-ic">⚙️</span>Procesos</button>
     <button class="ni" id="nav-focus" onclick="openFocus()"><span class="ni-ic">🧠</span>Modo foco</button>
     <div class="sfooter">
-      <div class="ucard">
+      <div class="ucard" onclick="showPage('config')" style="cursor:pointer" title="Configuración">
         <div class="uavatar" id="uavatar">A</div>
-        <div><div class="uname">Adrian</div><div class="uemail" id="uemail"></div></div>
+        <div style="flex:1;min-width:0"><div class="uname" id="uname-display">Adrian</div><div class="uemail" id="uemail"></div></div>
+        <div style="font-size:14px;color:var(--text3);flex-shrink:0">⚙</div>
       </div>
       <button class="blogout" onclick="doSignOut()">Cerrar sesión</button>
     </div>
@@ -444,15 +454,18 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="brf" id="brf"></div>
       <div class="abar" id="abar">⚠️ <span id="abar-txt"></span></div>
       <div class="sgrid" id="sgrid"></div>
+      <div class="tlist" id="hoy-list"></div>
       <!-- Procesos del período -->
-      <div id="hoy-procs" style="display:none;margin-bottom:1.75rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem">
-          <div style="font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase">Procesos del período</div>
-          <button class="abt" style="opacity:1;font-size:12px;color:var(--accent);font-weight:600;border:none;background:none;cursor:pointer" onclick="showPage('procesos')">Ver todos →</button>
+      <div id="hoy-procs" style="display:none;margin-top:2rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--text)">⚙️ Procesos del período</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Progreso del mes actual</div>
+          </div>
+          <button class="abt" style="opacity:1" onclick="showPage('procesos')">Ver todos →</button>
         </div>
         <div id="hoy-procs-list" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
-      <div class="tlist" id="hoy-list"></div>
     </div>
     <!-- LISTA -->
     <div class="page" id="page-lista">
@@ -497,8 +510,39 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
         <div id="mq4" class="qcard q4" style="grid-row:2;grid-column:3"></div>
       </div>
     </div>
-    <!-- PROCESOS -->
-    <div class="page" id="page-procesos">
+    <!-- CONFIGURACIÓN -->
+    <div class="page" id="page-config">
+      <div class="pghdr"><div class="pghdr-left"><h2>Configuración</h2><p>Personaliza tu perfil y preferencias</p></div></div>
+      <div style="max-width:520px;display:flex;flex-direction:column;gap:16px">
+        <!-- Perfil -->
+        <div class="config-card">
+          <div class="config-card-title">👤 Perfil</div>
+          <div class="fr"><label>Nombre para mostrar</label><input id="cfg-name" type="text" placeholder="Tu nombre"/></div>
+          <div class="fr"><label>Email</label><input id="cfg-email" type="email" disabled style="opacity:.6;cursor:not-allowed" placeholder=""/></div>
+          <button class="bsave" onclick="saveProfile()" style="width:100%">Guardar nombre</button>
+          <div class="cfg-msg" id="cfg-profile-msg"></div>
+        </div>
+        <!-- Contraseña -->
+        <div class="config-card">
+          <div class="config-card-title">🔒 Cambiar contraseña</div>
+          <div class="fr"><label>Nueva contraseña</label><input id="cfg-pw1" type="password" placeholder="Mínimo 6 caracteres"/></div>
+          <div class="fr"><label>Confirmar contraseña</label><input id="cfg-pw2" type="password" placeholder="Repite la contraseña"/></div>
+          <button class="bsave" onclick="savePassword()" style="width:100%">Cambiar contraseña</button>
+          <div class="cfg-msg" id="cfg-pw-msg"></div>
+        </div>
+        <!-- 2FA -->
+        <div class="config-card">
+          <div class="config-card-title">🛡️ Seguridad</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6">El doble factor de autenticación (2FA) agrega una capa extra de seguridad. Se configura al iniciar sesión por primera vez en un dispositivo nuevo.</div>
+          <div id="cfg-2fa-status" style="font-size:13px;font-weight:600;color:var(--green)">✓ 2FA disponible en tu cuenta</div>
+        </div>
+        <!-- Datos -->
+        <div class="config-card">
+          <div class="config-card-title">📊 Tu cuenta</div>
+          <div id="cfg-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+        </div>
+      </div>
+    </div>
       <div id="proc-list-view">
         <div class="pghdr">
           <div class="pghdr-left"><h2>Procesos</h2><p>Flujos de trabajo repetibles con subtareas por entidad</p></div>
@@ -670,9 +714,32 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="fr"><label>¿Periódica?</label><select id="frec" onchange="toggleRec()"><option value="none">No se repite</option><option value="monthly_days">📆 Días del mes (ej: 15 y 30)</option><option value="weekly">📅 Días de la semana</option></select></div>
     <div id="rec-wrap" style="display:none"><div class="fr"><label id="rlbl">Días</label><div class="ropts" id="ropts"></div></div></div>
     <div class="fr"><label>Alerta anticipada</label><select id="fal"><option value="0">Sin alerta</option><option value="1">1 día antes</option><option value="3" selected>3 días antes</option><option value="7">7 días antes</option><option value="15">15 días antes</option></select></div>
+    <div id="fr-avances" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <label style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin:0">Avances registrados</label>
+        <button type="button" onclick="addAvance()" style="font-size:11px;color:var(--accent);background:var(--accent-l);border:none;padding:3px 10px;border-radius:6px;cursor:pointer;font-weight:700;font-family:inherit">+ Agregar avance</button>
+      </div>
+      <div id="avances-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>
+    </div>
     <div class="factions"><button class="bcancel" onclick="closeModal()">Cancelar</button><button class="bsave" onclick="saveTask()">Guardar tarea</button></div>
   </div>
 </div>
+<!-- MODAL AVANCE -->
+<div class="modal-bg" id="avance-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hdr"><h3>Registrar avance</h3><button class="modal-close" onclick="closeAvanceModal()">✕</button></div>
+    <div class="fr"><label>Descripción del avance *</label><textarea id="av-text" placeholder="¿Qué avanzaste? ¿Qué falta? ¿Hay algún bloqueo?" style="min-height:100px"></textarea></div>
+    <div class="fr"><label>Nueva fecha límite (opcional)</label><input type="date" id="av-date"/></div>
+    <div class="fr"><label>Porcentaje de avance estimado</label>
+      <div style="display:flex;align-items:center;gap:12px">
+        <input type="range" id="av-pct" min="0" max="100" step="5" value="50" oninput="document.getElementById('av-pct-val').textContent=this.value+'%'" style="flex:1"/>
+        <span id="av-pct-val" style="font-size:14px;font-weight:700;color:var(--accent);min-width:40px">50%</span>
+      </div>
+    </div>
+    <div class="factions"><button class="bcancel" onclick="closeAvanceModal()">Cancelar</button><button class="bsave" onclick="saveAvance()">Guardar avance</button></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -754,9 +821,11 @@ async function boot(){
   user=session.user;
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  const emailShort=user.email.split('@')[0];
   document.getElementById('uemail').textContent=user.email;
-  document.getElementById('uavatar').textContent=emailShort[0].toUpperCase();
+  // Load display name
+  const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
+  document.getElementById('uname-display').textContent=savedName;
+  document.getElementById('uavatar').textContent=savedName[0].toUpperCase();
   await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
 }
 async function doSignOut(){await db.auth.signOut();location.reload();}
@@ -766,7 +835,9 @@ db.auth.onAuthStateChange(async(ev,session)=>{
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('uemail').textContent=user.email;
-    document.getElementById('uavatar').textContent=user.email[0].toUpperCase();
+    const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
+    document.getElementById('uname-display').textContent=savedName;
+    document.getElementById('uavatar').textContent=savedName[0].toUpperCase();
     await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
   }
   if(ev==='SIGNED_OUT'){document.getElementById('auth-screen').style.display='flex';document.getElementById('app').style.display='none';user=null;}
@@ -815,6 +886,7 @@ function showPage(p){
   document.getElementById('nav-'+p)?.classList.add('active');
   if(p==='hoy')renderHoy();if(p==='lista')renderLista();if(p==='calendario')renderCal();if(p==='anual')renderAnual();if(p==='eisenhower')renderMatrix();
   if(p==='procesos'){renderProcList();}
+  if(p==='config'){renderConfig();}
 }
 function refresh(){const a=document.querySelector('.page.active')?.id.replace('page-','');if(a)showPage(a);}
 
@@ -841,9 +913,8 @@ function renderHoy(){
 }
 
 async function renderHoyProcs(){
-  const el=document.getElementById('hoy-procs');
-  if(!procs||!procs.length){el.style.display='none';return;}
-  el.style.display='';
+  if(!procs||!procs.length){document.getElementById('hoy-procs').style.display='none';return;}
+  document.getElementById('hoy-procs').style.display='';
   const period=getCurrentPeriod();
   const ids=procs.map(p=>p.id);
   const{data:allSteps}=await db.from('process_steps').select('*').in('process_id',ids);
@@ -851,7 +922,7 @@ async function renderHoyProcs(){
   const{data:runs}=await db.from('process_runs').select('*').in('process_id',ids).eq('period',period);
   let allChecks=[];
   if(runs?.length){const runIds=runs.map(r=>r.id);const{data:c}=await db.from('process_checks').select('*').in('run_id',runIds);allChecks=c||[];}
-  const CAT_ICONS={facturacion:'💰',general:'📋',nomina:'👥',juridico:'⚖️',reuniones:'📅',internacional:'🌎',reportes:'📊',contabilidad:'🧾',compras:'🛒',rrhh:'👤'};
+  const ICONS={'facturacion':'💰','general':'📋','nomina':'👥','juridico':'⚖️','reuniones':'📅','internacional':'🌎','reportes':'📊','contabilidad':'🧾','compras':'🛒','rrhh':'👤'};
   document.getElementById('hoy-procs-list').innerHTML=procs.map(p=>{
     const steps=(allSteps||[]).filter(s=>s.process_id===p.id);
     const entities=(allEntities||[]).filter(e=>e.process_id===p.id);
@@ -860,23 +931,16 @@ async function renderHoyProcs(){
     const totalCells=steps.length*entities.length;
     const done=checks.filter(c=>c.done).length;
     const pct=totalCells?Math.round(done/totalCells*100):0;
-    const ic=p.icon||CAT_ICONS[p.category]||'📋';
+    const ic=ICONS[p.category]||p.icon||'📋';
     const recLabel=RECURRENCE_LABELS[p.recurrence_type]||'Mensual';
-    const statusColor=pct===100?'var(--green)':pct>50?'var(--accent)':'var(--orange)';
-    const statusLabel=pct===100?'✓ Completado':pct>0?'En progreso':'Por iniciar';
     return`<div class="hoy-proc-card" onclick="showPage('procesos');setTimeout(()=>openProc('${p.id}'),80)">
-      <div class="hoy-proc-icon" style="background:${p.color||'#4361ee'}18">${ic}</div>
+      <div class="hoy-proc-icon" style="background:${p.color||'#4361ee'}22">${ic}</div>
       <div class="hoy-proc-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <div class="hoy-proc-title">${p.title}</div>
-          <span style="font-size:11px;font-weight:700;color:${statusColor};background:${statusColor}18;padding:2px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0">${statusLabel}</span>
-        </div>
-        <div class="hoy-proc-meta">${steps.length} pasos · ${entities.length} entidades · ${recLabel} · ${getPeriodLabel(period)}</div>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
-          <div class="hoy-proc-bar" style="flex:1"><div class="hoy-proc-fill" style="width:${pct}%;background:linear-gradient(90deg,${statusColor},${statusColor}99)"></div></div>
-          <div class="hoy-proc-pct" style="color:${statusColor}">${pct}%</div>
-        </div>
+        <div class="hoy-proc-title">${p.title}</div>
+        <div class="hoy-proc-meta">${steps.length} pasos · ${entities.length} entidades · ${recLabel}</div>
+        <div class="hoy-proc-bar"><div class="hoy-proc-fill" style="width:${pct}%"></div></div>
       </div>
+      <div class="hoy-proc-pct" style="color:${pct===100?'var(--green)':'var(--accent)'}">${pct}%</div>
     </div>`;
   }).join('');
 }
@@ -908,6 +972,7 @@ function tHTML(t){
       </div>
       <div class="tca">
         ${t.notes?`<button class="abt" onclick="togNotes('${t.id}')">ver nota</button>`:''}
+        ${(t.avances&&t.avances.length)?`<button class="abt" style="color:var(--accent)" onclick="openEdit('${t.id}')">📈 ${t.avances.length} avance${t.avances.length>1?'s':''}</button>`:''}
         <button class="abt" onclick="openEdit('${t.id}')">editar</button>
         <button class="abt del" onclick="delTask('${t.id}')">borrar</button>
       </div>
@@ -983,6 +1048,7 @@ function openModal(date){
   ['ft','fn'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fp').value='media';document.getElementById('fu').value='normal';document.getElementById('fc').value='general';
   document.getElementById('fd').value=date||'';document.getElementById('frec').value='none';document.getElementById('fal').value='3';
+  document.getElementById('fr-avances').style.display='none';
   toggleRec();document.getElementById('task-modal').classList.add('open');setTimeout(()=>document.getElementById('ft').focus(),100);
 }
 function openEdit(id){
@@ -993,6 +1059,12 @@ function openEdit(id){
   document.getElementById('fc').value=t.category||'general';document.getElementById('fd').value=t.due_date||'';
   document.getElementById('frec').value=t.recurrence_type||'none';document.getElementById('fal').value=t.alert_days||3;
   toggleRec();if(t.recurrence_days)document.querySelectorAll('.rday').forEach(el=>el.classList.toggle('sel',t.recurrence_days.includes(parseInt(el.dataset.v))));
+  // Show avances
+  document.getElementById('fr-avances').style.display='';
+  const avances=t.avances||[];
+  document.getElementById('avances-list').innerHTML=avances.length
+    ? avances.map(a=>`<div class="avance-item"><div class="avance-date">${fmtD(a.date)} ${a.time||''}</div><div class="avance-text">${a.text}</div>${a.pct?`<span class="avance-pct">${a.pct}% completado</span>`:''}</div>`).join('')
+    : '<div style="font-size:12px;color:var(--text3);padding:4px 0">No hay avances registrados aún.</div>';
   document.getElementById('task-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('task-modal').classList.remove('open');}
@@ -1010,7 +1082,83 @@ function checkAlerts(){
 }
 function playBeep(){try{const c=new(window.AudioContext||window.webkitAudioContext)();[523,659,784].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(.3,c.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.15+.4);o.start(c.currentTime+i*.15);o.stop(c.currentTime+i*.15+.4);});}catch(e){}}
 function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeFocus();closeProcModal();}if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openModal();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeFocus();closeProcModal();closeAvanceModal();}if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openModal();}});
+
+// ══ CONFIGURACIÓN ═════════════════════════════════════════
+function renderConfig(){
+  const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
+  document.getElementById('cfg-name').value=savedName;
+  document.getElementById('cfg-email').value=user.email;
+  document.getElementById('cfg-pw1').value='';
+  document.getElementById('cfg-pw2').value='';
+  document.getElementById('cfg-profile-msg').textContent='';
+  document.getElementById('cfg-pw-msg').textContent='';
+  document.getElementById('cfg-stats').innerHTML=`
+    <div class="pps"><div class="pps-n">${tasks.length}</div><div class="pps-l">Total tareas</div></div>
+    <div class="pps"><div class="pps-n">${tasks.filter(t=>t.done).length}</div><div class="pps-l">Completadas</div></div>
+    <div class="pps"><div class="pps-n">${tasks.filter(t=>!t.done).length}</div><div class="pps-l">Pendientes</div></div>
+    <div class="pps"><div class="pps-n">${procs.length}</div><div class="pps-l">Procesos</div></div>`;
+}
+function cfgMsg(id,txt,ok){const e=document.getElementById(id);e.textContent=txt;e.className='cfg-msg '+(ok?'ok':'err');}
+function saveProfile(){
+  const name=document.getElementById('cfg-name').value.trim();
+  if(!name){cfgMsg('cfg-profile-msg','Ingresa un nombre',false);return;}
+  localStorage.setItem('fmc_display_name',name);
+  document.getElementById('uname-display').textContent=name;
+  document.getElementById('uavatar').textContent=name[0].toUpperCase();
+  cfgMsg('cfg-profile-msg','✓ Nombre actualizado',true);
+  toast('✓ Nombre guardado');
+}
+async function savePassword(){
+  const pw1=document.getElementById('cfg-pw1').value;
+  const pw2=document.getElementById('cfg-pw2').value;
+  if(!pw1){cfgMsg('cfg-pw-msg','Ingresa la nueva contraseña',false);return;}
+  if(pw1.length<6){cfgMsg('cfg-pw-msg','Mínimo 6 caracteres',false);return;}
+  if(pw1!==pw2){cfgMsg('cfg-pw-msg','Las contraseñas no coinciden',false);return;}
+  const{error}=await db.auth.updateUser({password:pw1});
+  if(error){cfgMsg('cfg-pw-msg','Error: '+error.message,false);return;}
+  document.getElementById('cfg-pw1').value='';
+  document.getElementById('cfg-pw2').value='';
+  cfgMsg('cfg-pw-msg','✓ Contraseña actualizada correctamente',true);
+  toast('✓ Contraseña cambiada');
+}
+
+// ══ AVANCES ═══════════════════════════════════════════════
+let avanceTaskId=null;
+function addAvance(){
+  if(!editId){toast('Guarda la tarea primero para agregar avances');return;}
+  avanceTaskId=editId;
+  const t=tasks.find(x=>x.id===editId);
+  document.getElementById('av-text').value='';
+  document.getElementById('av-pct').value=50;
+  document.getElementById('av-pct-val').textContent='50%';
+  document.getElementById('av-date').value=t?.due_date||'';
+  document.getElementById('avance-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('av-text').focus(),100);
+}
+function closeAvanceModal(){document.getElementById('avance-modal').classList.remove('open');}
+async function saveAvance(){
+  const text=document.getElementById('av-text').value.trim();
+  if(!text){document.getElementById('av-text').focus();return;}
+  const pct=document.getElementById('av-pct').value;
+  const newDate=document.getElementById('av-date').value;
+  const t=tasks.find(x=>x.id===avanceTaskId);if(!t)return;
+  const now=new Date();
+  const avance={date:now.toISOString().slice(0,10),time:now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),text,pct:parseInt(pct)};
+  const avances=[...(t.avances||[]),avance];
+  const update={avances,updated_at:now.toISOString()};
+  if(newDate&&newDate!==t.due_date) update.due_date=newDate;
+  await db.from('tasks').update(update).eq('id',avanceTaskId);
+  t.avances=avances;
+  if(update.due_date) t.due_date=update.due_date;
+  closeAvanceModal();
+  // Refresh avances list in edit modal
+  document.getElementById('avances-list').innerHTML=avances.map(a=>`<div class="avance-item"><div class="avance-date">${fmtD(a.date)} ${a.time||''}</div><div class="avance-text">${a.text}</div>${a.pct?`<span class="avance-pct">${a.pct}% completado</span>`:''}</div>`).join('');
+  if(update.due_date) document.getElementById('fd').value=update.due_date;
+  toast('✓ Avance registrado');
+  refresh();
+}
+document.getElementById('avance-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAvanceModal();});
 
 // ══ PROCESOS ══════════════════════════════════════════════
 let procs=[],procSteps=[],procEntities=[],currentProcId=null,currentPeriod=null;
