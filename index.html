@@ -39,9 +39,17 @@ h1,h2,h3 { font-family: 'DM Serif Display', serif; }
 .auth-form input:focus { border-color: var(--accent); }
 .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; font-weight: 500; cursor: pointer; transition: opacity 0.2s; }
 .btn-primary:hover { opacity: 0.88; }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
 .auth-toggle { margin-top: 1rem; font-size: 13px; color: var(--text2); }
 .auth-toggle span { color: var(--accent); cursor: pointer; font-weight: 500; }
 .auth-msg { font-size: 12px; color: var(--q1); margin-top: 8px; min-height: 16px; }
+.auth-msg.ok { color: var(--accent); }
+/* 2FA */
+.mfa-setup { text-align: center; }
+.mfa-setup img { border-radius: var(--radius-sm); margin: 1rem auto; display: block; border: 1px solid var(--border); }
+.mfa-code-hint { font-size: 11px; color: var(--text3); word-break: break-all; margin: 0.5rem 0 1rem; background: var(--surface2); padding: 8px; border-radius: var(--radius-sm); }
+.mfa-steps { font-size: 12px; color: var(--text2); text-align: left; line-height: 1.8; margin-bottom: 1rem; }
+.mfa-steps b { color: var(--text); }
 
 /* LAYOUT */
 #app { display: none; }
@@ -236,19 +244,49 @@ h1,h2,h3 { font-family: 'DM Serif Display', serif; }
 <!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
-    <h1>Mis Tareas</h1>
-    <p id="auth-subtitle">Accede a tu gestor personal</p>
-    <div class="auth-form">
-      <input type="email" id="auth-email" placeholder="tu@email.com" autocomplete="email"/>
-      <input type="password" id="auth-pass" placeholder="Contraseña" autocomplete="current-password"/>
-      <div id="auth-name-row" style="display:none">
-        <input type="text" id="auth-name" placeholder="Tu nombre (opcional)" style="width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;margin-bottom:10px;background:var(--bg);color:var(--text);outline:none;"/>
+    <!-- STEP 1: Login / Register -->
+    <div id="auth-step-1">
+      <h1>Mis Tareas</h1>
+      <p id="auth-subtitle">Accede a tu gestor personal</p>
+      <div class="auth-form">
+        <input type="email" id="auth-email" placeholder="tu@email.com" autocomplete="email"/>
+        <input type="password" id="auth-pass" placeholder="Contraseña (mín. 6 caracteres)" autocomplete="current-password"/>
+        <button class="btn-primary" id="auth-btn" onclick="handleAuth()">Entrar</button>
+        <div class="auth-msg" id="auth-msg"></div>
       </div>
-      <button class="btn-primary" id="auth-btn" onclick="handleAuth()">Entrar</button>
-      <div class="auth-msg" id="auth-msg"></div>
+      <div class="auth-toggle">
+        <span id="auth-toggle-link" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate</span>
+      </div>
     </div>
-    <div class="auth-toggle">
-      <span id="auth-toggle-link" onclick="toggleAuthMode()">¿No tienes cuenta? Regístrate</span>
+    <!-- STEP 2: 2FA verify -->
+    <div id="auth-step-2fa" style="display:none">
+      <h1>Verificación</h1>
+      <p>Ingresa el código de tu app de autenticación</p>
+      <div class="auth-form">
+        <input type="text" id="auth-totp" placeholder="000000" maxlength="6" autocomplete="one-time-code" style="letter-spacing:6px;font-size:20px;text-align:center;"/>
+        <button class="btn-primary" onclick="verifyTOTP()">Verificar</button>
+        <div class="auth-msg" id="auth-msg-2fa"></div>
+      </div>
+      <div class="auth-toggle"><span onclick="backToLogin()">← Volver</span></div>
+    </div>
+    <!-- STEP 3: 2FA setup (first time) -->
+    <div id="auth-step-2fa-setup" style="display:none">
+      <h1>Activa 2FA</h1>
+      <p>Escanea con Google Authenticator o Authy</p>
+      <div class="mfa-setup">
+        <div class="mfa-steps">
+          <b>1.</b> Instala <b>Google Authenticator</b> o <b>Authy</b> en tu celular<br>
+          <b>2.</b> Escanea el código QR de abajo<br>
+          <b>3.</b> Ingresa el código de 6 dígitos que aparece
+        </div>
+        <img id="mfa-qr" src="" alt="QR 2FA" width="180" height="180"/>
+        <div class="mfa-code-hint" id="mfa-secret"></div>
+        <div class="auth-form">
+          <input type="text" id="mfa-verify-code" placeholder="Código de 6 dígitos" maxlength="6" style="letter-spacing:4px;font-size:18px;text-align:center;"/>
+          <button class="btn-primary" onclick="confirmMFASetup()">Activar 2FA</button>
+          <div class="auth-msg" id="auth-msg-setup"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -492,6 +530,8 @@ let pomInterval = null;
 let pomSeconds = 25 * 60;
 let pomRunning = false;
 let authMode = 'login';
+let mfaFactorId = null;
+let pendingSession = null;
 
 // ─── AUTH ───────────────────────────────────────────────
 function toggleAuthMode() {
@@ -499,33 +539,109 @@ function toggleAuthMode() {
   document.getElementById('auth-btn').textContent = authMode === 'login' ? 'Entrar' : 'Crear cuenta';
   document.getElementById('auth-subtitle').textContent = authMode === 'login' ? 'Accede a tu gestor personal' : 'Crea tu cuenta gratuita';
   document.getElementById('auth-toggle-link').textContent = authMode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión';
-  document.getElementById('auth-name-row').style.display = authMode === 'register' ? 'block' : 'none';
   document.getElementById('auth-msg').textContent = '';
+}
+
+function backToLogin() {
+  document.getElementById('auth-step-2fa').style.display = 'none';
+  document.getElementById('auth-step-2fa-setup').style.display = 'none';
+  document.getElementById('auth-step-1').style.display = '';
 }
 
 async function handleAuth() {
   const email = document.getElementById('auth-email').value.trim();
   const pass = document.getElementById('auth-pass').value;
   const msg = document.getElementById('auth-msg');
+  const btn = document.getElementById('auth-btn');
+  msg.className = 'auth-msg';
   if (!email || !pass) { msg.textContent = 'Completa email y contraseña'; return; }
-  msg.textContent = '...';
-  if (authMode === 'login') {
-    const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
-    if (error) { msg.textContent = 'Credenciales incorrectas'; return; }
-  } else {
+  if (pass.length < 6) { msg.textContent = 'La contraseña debe tener al menos 6 caracteres'; return; }
+  btn.disabled = true;
+  msg.textContent = 'Procesando...';
+
+  if (authMode === 'register') {
     const { data, error } = await db.auth.signUp({ email, password: pass });
+    btn.disabled = false;
     if (error) { msg.textContent = error.message; return; }
-    msg.style.color = 'var(--accent)';
-    msg.textContent = 'Cuenta creada. Revisa tu email para confirmar (o inicia sesión directo).';
+    if (data?.user?.identities?.length === 0) { msg.textContent = 'Este email ya está registrado. Inicia sesión.'; return; }
+    msg.className = 'auth-msg ok';
+    msg.textContent = '✓ Cuenta creada. Ahora inicia sesión.';
+    authMode = 'login';
+    document.getElementById('auth-btn').textContent = 'Entrar';
+    document.getElementById('auth-toggle-link').textContent = '¿No tienes cuenta? Regístrate';
+    document.getElementById('auth-subtitle').textContent = 'Accede a tu gestor personal';
+    return;
+  }
+
+  // LOGIN
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false;
+  if (error) { msg.textContent = 'Email o contraseña incorrectos'; return; }
+
+  // Check if MFA is required
+  if (data?.session === null && data?.user === null) {
+    // MFA challenge needed
+    const { data: challengeData, error: challengeError } = await db.auth.mfa.listFactors();
+    if (challengeData?.totp?.length > 0) {
+      mfaFactorId = challengeData.totp[0].id;
+      showStep('2fa');
+    }
+    return;
+  }
+
+  // Check if user has MFA enrolled
+  if (data?.session) {
+    pendingSession = data.session;
+    const { data: factors } = await db.auth.mfa.listFactors();
+    if (factors?.totp?.length > 0 && factors.totp[0].status === 'verified') {
+      mfaFactorId = factors.totp[0].id;
+      showStep('2fa');
+    } else {
+      // No MFA yet — offer setup
+      await initMFASetup();
+    }
   }
 }
 
-async function signOut() {
-  await db.auth.signOut();
-  location.reload();
+async function initMFASetup() {
+  const { data, error } = await db.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'MisTareas' });
+  if (error || !data) { bootApp(); return; }
+  mfaFactorId = data.id;
+  document.getElementById('mfa-qr').src = data.totp.qr_code;
+  document.getElementById('mfa-secret').textContent = 'Clave manual: ' + data.totp.secret;
+  showStep('2fa-setup');
 }
 
-db.auth.onAuthStateChange(async (event, session) => {
+async function confirmMFASetup() {
+  const code = document.getElementById('mfa-verify-code').value.trim();
+  const msg = document.getElementById('auth-msg-setup');
+  if (code.length !== 6) { msg.textContent = 'El código debe tener 6 dígitos'; return; }
+  const { data: challenge } = await db.auth.mfa.challenge({ factorId: mfaFactorId });
+  const { error } = await db.auth.mfa.verify({ factorId: mfaFactorId, challengeId: challenge.id, code });
+  if (error) { msg.textContent = 'Código incorrecto, intenta de nuevo'; return; }
+  toast('✓ 2FA activado correctamente');
+  bootApp();
+}
+
+async function verifyTOTP() {
+  const code = document.getElementById('auth-totp').value.trim();
+  const msg = document.getElementById('auth-msg-2fa');
+  if (code.length !== 6) { msg.textContent = 'Ingresa los 6 dígitos'; return; }
+  const { data: challenge, error: cError } = await db.auth.mfa.challenge({ factorId: mfaFactorId });
+  if (cError) { msg.textContent = 'Error al generar desafío. Intenta de nuevo.'; return; }
+  const { error } = await db.auth.mfa.verify({ factorId: mfaFactorId, challengeId: challenge.id, code });
+  if (error) { msg.textContent = 'Código incorrecto'; return; }
+  bootApp();
+}
+
+function showStep(step) {
+  document.getElementById('auth-step-1').style.display = 'none';
+  document.getElementById('auth-step-2fa').style.display = step === '2fa' ? '' : 'none';
+  document.getElementById('auth-step-2fa-setup').style.display = step === '2fa-setup' ? '' : 'none';
+}
+
+async function bootApp() {
+  const { data: { session } } = await db.auth.getSession();
   if (session?.user) {
     currentUser = session.user;
     document.getElementById('auth-screen').style.display = 'none';
@@ -535,9 +651,34 @@ db.auth.onAuthStateChange(async (event, session) => {
     showPage('hoy');
     requestNotifPermission();
     checkAlerts();
-  } else {
+  }
+}
+
+async function signOut() {
+  await db.auth.signOut();
+  location.reload();
+}
+
+db.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session?.user && !currentUser) {
+    // Auto-login on page reload if session exists
+    const { data: factors } = await db.auth.mfa.listFactors();
+    const hasMFA = factors?.totp?.some(f => f.status === 'verified');
+    if (!hasMFA) {
+      currentUser = session.user;
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('user-email-display').textContent = session.user.email;
+      await loadTasks();
+      showPage('hoy');
+      requestNotifPermission();
+      checkAlerts();
+    }
+  }
+  if (event === 'SIGNED_OUT') {
     document.getElementById('auth-screen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
+    currentUser = null;
   }
 });
 
