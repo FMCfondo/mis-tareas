@@ -264,6 +264,83 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .empty-state .emoji{font-size:40px;margin-bottom:.75rem}
 .empty-state p{font-size:14px;font-weight:500}
 
+/* ══ PROCESOS ══ */
+.proc-list{display:flex;flex-direction:column;gap:12px}
+.proc-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;transition:all .2s;cursor:pointer}
+.proc-card:hover{box-shadow:var(--sh);transform:translateY(-2px)}
+.proc-card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
+.proc-icon{width:42px;height:42px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.proc-info{flex:1}
+.proc-title{font-size:15px;font-weight:700;color:var(--text)}
+.proc-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.proc-actions{display:flex;gap:6px;opacity:0;transition:opacity .2s}
+.proc-card:hover .proc-actions{opacity:1}
+.proc-action-btn{padding:5px 12px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:11px;font-family:inherit;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .15s}
+.proc-action-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.proc-action-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red-l)}
+.entity-bars{display:flex;flex-direction:column;gap:6px}
+.entity-bar{display:flex;align-items:center;gap:10px}
+.entity-name{font-size:12px;font-weight:600;color:var(--text2);width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entity-progress{flex:1;height:7px;background:var(--surface2);border-radius:10px;overflow:hidden}
+.entity-progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .4s ease}
+.entity-pct{font-size:11px;font-weight:700;color:var(--text2);width:32px;text-align:right;flex-shrink:0}
+.entity-count{font-size:10px;color:var(--text3);width:48px;text-align:right;flex-shrink:0}
+
+/* PROCESO DETALLE */
+.proc-detail-hdr{display:flex;align-items:center;gap:14px;margin-bottom:1.75rem;flex-wrap:wrap}
+.proc-detail-back{padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:inherit;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .15s;display:flex;align-items:center;gap:6px}
+.proc-detail-back:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.proc-detail-title{font-family:'Playfair Display',serif;font-size:26px;flex:1}
+.period-selector{display:flex;align-items:center;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap}
+.period-btn{padding:7px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:12px;font-family:inherit;font-weight:700;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .15s}
+.period-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.period-btn:hover:not(.active){border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+
+/* MATRIZ */
+.matrix-wrap{overflow-x:auto;border-radius:var(--r);border:1.5px solid var(--border)}
+.matrix-table{border-collapse:collapse;width:100%;min-width:700px;background:var(--surface)}
+.matrix-table th{background:var(--surface2);padding:10px 14px;font-size:11px;font-weight:700;color:var(--text2);text-align:center;border-bottom:1.5px solid var(--border);border-right:1px solid var(--border);letter-spacing:.3px;white-space:nowrap}
+.matrix-table th.step-col{text-align:left;min-width:220px;position:sticky;left:0;z-index:2;background:var(--surface2)}
+.matrix-table th.entity-col{min-width:110px}
+.matrix-table td{padding:8px 14px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);vertical-align:middle}
+.matrix-table td.step-cell{font-size:13px;font-weight:500;color:var(--text);position:sticky;left:0;background:var(--surface);z-index:1}
+.matrix-table td.step-cell.parent{font-weight:700;background:var(--surface2);font-size:13px}
+.matrix-table td.step-cell.child{padding-left:28px;font-size:12px;color:var(--text2)}
+.matrix-table td.step-cell .step-optional{font-size:10px;color:var(--text3);background:var(--surface2);padding:1px 6px;border-radius:10px;margin-left:6px;font-weight:600}
+.matrix-table td.check-cell{text-align:center;background:var(--surface)}
+.matrix-table tr:hover td{background:#f8f9ff}
+.matrix-table tr:hover td.step-cell{background:#f8f9ff}
+.matrix-table tr:hover td.step-cell.parent{background:#eef0f8}
+.mchk{width:24px;height:24px;border-radius:6px;border:2px solid var(--border);cursor:pointer;background:none;display:inline-flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
+.mchk:hover{border-color:var(--green);background:var(--green-l)}
+.mchk.on{background:var(--green);border-color:var(--green)}
+.mchk.on::after{content:'✓';font-size:13px;color:#fff;font-weight:700}
+.mchk.blocked{opacity:.3;cursor:not-allowed}
+.entity-summary-row td{background:var(--accent-l);font-weight:700;font-size:12px}
+.entity-summary-row td.step-cell{color:var(--accent);font-size:12px}
+.prog-mini{height:5px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:3px}
+.prog-mini-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:10px}
+.proc-period-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem}
+.pps{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);padding:.875rem 1rem}
+.pps-n{font-size:22px;font-weight:700;font-family:'Playfair Display',serif}
+.pps-l{font-size:11px;color:var(--text2);margin-top:2px;font-weight:500}
+
+/* MODAL PROCESO */
+.step-list-editor{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:220px;overflow-y:auto}
+.step-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--rs);border:1px solid var(--border)}
+.step-item input{flex:1;border:none;background:transparent;font-size:13px;font-family:inherit;color:var(--text);outline:none;font-weight:500}
+.step-item-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px;transition:color .15s;flex-shrink:0}
+.step-item-del:hover{color:var(--red)}
+.step-item-sub{font-size:10px;color:var(--text3);background:var(--purple-l);padding:2px 7px;border-radius:10px;flex-shrink:0;font-weight:700}
+.add-step-row{display:flex;gap:8px;margin-top:8px}
+.add-step-row input{flex:1;padding:9px 12px;border:1.5px dashed var(--border);border-radius:var(--rs);font-size:12px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;transition:border-color .2s}
+.add-step-row input:focus{border-color:var(--accent)}
+.add-step-row button{padding:9px 14px;border:1.5px solid var(--accent);border-radius:var(--rs);background:var(--accent-l);color:var(--accent);font-size:12px;font-family:inherit;font-weight:700;cursor:pointer}
+.entity-list-editor{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.entity-tag{display:flex;align-items:center;gap:6px;background:var(--accent-l);border:1.5px solid var(--accent);color:var(--accent);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.entity-tag button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:13px;padding:0;line-height:1;transition:color .15s}
+.entity-tag button:hover{color:var(--red)}
+
 @media(max-width:900px){
   .sidebar{width:200px}
   .main{margin-left:200px;padding:1.5rem}
@@ -335,6 +412,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <button class="ni" id="nav-anual" onclick="showPage('anual')"><span class="ni-ic">📆</span>Vista anual</button>
     <button class="ni" id="nav-eisenhower" onclick="showPage('eisenhower')"><span class="ni-ic">🎯</span>Matriz Eisenhower</button>
     <div class="nav-section">Productividad</div>
+    <button class="ni" id="nav-procesos" onclick="showPage('procesos')"><span class="ni-ic">⚙️</span>Procesos</button>
     <button class="ni" id="nav-focus" onclick="openFocus()"><span class="ni-ic">🧠</span>Modo foco</button>
     <div class="sfooter">
       <div class="ucard">
@@ -400,10 +478,77 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
         <div id="mq4" class="qcard q4" style="grid-row:2;grid-column:3"></div>
       </div>
     </div>
+    <!-- PROCESOS -->
+    <div class="page" id="page-procesos">
+      <div id="proc-list-view">
+        <div class="pghdr">
+          <div class="pghdr-left"><h2>Procesos</h2><p>Flujos de trabajo repetibles con subtareas por entidad</p></div>
+          <button class="btnn" onclick="openProcModal()">+ Nuevo proceso</button>
+        </div>
+        <div class="proc-list" id="proc-list"></div>
+      </div>
+      <div id="proc-detail-view" style="display:none">
+        <div class="proc-detail-hdr">
+          <button class="proc-detail-back" onclick="showProcList()">← Volver</button>
+          <div class="proc-detail-title" id="proc-detail-title"></div>
+          <button class="btnn" onclick="openProcModal(currentProcId)">✏️ Editar proceso</button>
+        </div>
+        <div class="period-selector" id="period-selector"></div>
+        <div class="proc-period-summary" id="proc-summary"></div>
+        <div class="matrix-wrap">
+          <table class="matrix-table" id="matrix-table">
+            <thead id="matrix-head"></thead>
+            <tbody id="matrix-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- FOCUS -->
+<!-- MODAL PROCESO -->
+<div class="modal-bg" id="proc-modal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-hdr">
+      <h3 id="proc-modal-title">Nuevo proceso</h3>
+      <button class="modal-close" onclick="closeProcModal()">✕</button>
+    </div>
+    <div class="fr"><label>Nombre del proceso *</label><input id="pm-title" type="text" placeholder="ej: Facturación Mensual"/></div>
+    <div class="fr"><label>Descripción</label><input id="pm-desc" type="text" placeholder="Descripción breve..."/></div>
+    <div class="f2">
+      <div class="fr"><label>Ícono / color</label>
+        <select id="pm-icon"><option value="📋">📋 Checklist</option><option value="💰">💰 Facturación</option><option value="📊">📊 Reportes</option><option value="⚖️">⚖️ Jurídico</option><option value="👥">👥 Nómina</option><option value="🌎">🌎 Internacional</option><option value="📅">📅 Reuniones</option></select>
+      </div>
+      <div class="fr"><label>Se repite</label>
+        <select id="pm-rec"><option value="monthly">Mensualmente</option><option value="none">No se repite</option></select>
+      </div>
+    </div>
+    <div class="fr">
+      <label>Entidades / Empresas</label>
+      <div class="entity-list-editor" id="pm-entities"></div>
+      <div class="add-step-row" style="margin-top:8px">
+        <input type="text" id="pm-entity-input" placeholder="Nombre de entidad (ej: Amigo Real)"/>
+        <button onclick="addEntity()">+ Agregar</button>
+      </div>
+    </div>
+    <div class="fr">
+      <label>Pasos del proceso</label>
+      <div class="step-list-editor" id="pm-steps"></div>
+      <div class="add-step-row">
+        <input type="text" id="pm-step-input" placeholder="Nuevo paso..."/>
+        <button onclick="addStep(false)">+ Paso</button>
+      </div>
+      <div class="add-step-row" style="margin-top:4px">
+        <input type="text" id="pm-substep-input" placeholder="Nueva subtarea (del paso anterior)..."/>
+        <button onclick="addStep(true)" style="background:var(--purple-l);border-color:var(--purple);color:var(--purple)">+ Subtarea</button>
+      </div>
+    </div>
+    <div class="factions">
+      <button class="bcancel" onclick="closeProcModal()">Cancelar</button>
+      <button class="bsave" onclick="saveProc()">Guardar proceso</button>
+    </div>
+  </div>
+</div>
 <div id="focus-ov">
   <svg width="0" height="0"><defs><linearGradient id="pgrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#4361ee"/><stop offset="100%" style="stop-color:#06d6a0"/></linearGradient></defs></svg>
   <div class="fctr" id="fctr"></div>
@@ -530,7 +675,7 @@ async function boot(){
   const emailShort=user.email.split('@')[0];
   document.getElementById('uemail').textContent=user.email;
   document.getElementById('uavatar').textContent=emailShort[0].toUpperCase();
-  await loadTasks();showPage('hoy');reqNotif();checkAlerts();
+  await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
 }
 async function doSignOut(){await db.auth.signOut();location.reload();}
 db.auth.onAuthStateChange(async(ev,session)=>{
@@ -540,7 +685,7 @@ db.auth.onAuthStateChange(async(ev,session)=>{
     document.getElementById('app').style.display='block';
     document.getElementById('uemail').textContent=user.email;
     document.getElementById('uavatar').textContent=user.email[0].toUpperCase();
-    await loadTasks();showPage('hoy');reqNotif();checkAlerts();
+    await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
   }
   if(ev==='SIGNED_OUT'){document.getElementById('auth-screen').style.display='flex';document.getElementById('app').style.display='none';user=null;}
 });
@@ -587,6 +732,7 @@ function showPage(p){
   document.getElementById('page-'+p).classList.add('active');
   document.getElementById('nav-'+p)?.classList.add('active');
   if(p==='hoy')renderHoy();if(p==='lista')renderLista();if(p==='calendario')renderCal();if(p==='anual')renderAnual();if(p==='eisenhower')renderMatrix();
+  if(p==='procesos'){renderProcList();}
 }
 function refresh(){const a=document.querySelector('.page.active')?.id.replace('page-','');if(a)showPage(a);}
 
@@ -740,7 +886,325 @@ function checkAlerts(){
 }
 function playBeep(){try{const c=new(window.AudioContext||window.webkitAudioContext)();[523,659,784].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(.3,c.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.15+.4);o.start(c.currentTime+i*.15);o.stop(c.currentTime+i*.15+.4);});}catch(e){}}
 function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeFocus();}if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openModal();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeFocus();closeProcModal();}if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openModal();}});
+
+// ══ PROCESOS ══════════════════════════════════════════════
+let procs=[],procSteps=[],procEntities=[],currentProcId=null,currentPeriod=null;
+let pmEntities=[],pmSteps=[];
+
+const FACTURACION_STEPS=[
+  {title:'Reporte Recibido',desc:'Información de garantías del mes enviada por la mutual',parent:null,optional:false},
+  {title:'Actualizar Datos en Plantillas',desc:'Actualizar plantillas Excel con nueva información',parent:null,optional:false},
+  {title:'Garantías',desc:'Primer subpaso: actualizar formato de garantías',parent:'Actualizar Datos en Plantillas',optional:false},
+  {title:'Borrador Terceros',desc:'Actualizar terceros nuevos',parent:'Actualizar Datos en Plantillas',optional:false},
+  {title:'Borrador Facturas',desc:'Generar borrador de facturas',parent:'Actualizar Datos en Plantillas',optional:false},
+  {title:'Borrador Cuentas de Cobro',desc:'Asociados pagaron → cuenta por cobrar a mutuales',parent:'Actualizar Datos en Plantillas',optional:false},
+  {title:'Actualizar Formato Terceros (Siigo)',desc:'Copiar datos desde plantilla al formato de Siigo',parent:null,optional:false},
+  {title:'Actualizar Formato Importación Facturas',desc:'Formato de facturas con nota aclaratoria',parent:null,optional:false},
+  {title:'Formato Comprobantes Contables Recaudos',desc:'Cerrar cuenta por cobrar del asociado → empresa',parent:null,optional:false},
+  {title:'Verificar Terceros en Siigo',desc:'Validar que no estén repetidos y datos completos',parent:null,optional:false},
+  {title:'Crear Terceros en Siigo',desc:'Cargar archivo individual de terceros en Siigo',parent:null,optional:false},
+  {title:'Importar y Ejecutar Facturación',desc:'Cargar archivo(s) de facturación masiva en Siigo',parent:null,optional:false},
+  {title:'Impresión y Envío Masivo',desc:'Enviar facturas a DIAN y a las personas',parent:null,optional:false},
+  {title:'Envío Correos Aclaratorios',desc:'Opcional según necesidad',parent:null,optional:true},
+  {title:'Generar Cuenta de Cobro Mutuales',desc:'Relación de facturas + cuenta de cobro en Excel → PDF',parent:null,optional:false},
+  {title:'Enviar Remisión y Anexo de Facturas',desc:'Enviar PDF generado a cada entidad',parent:null,optional:false},
+  {title:'Crear Comprobante de Recaudo de Avales',desc:'Cargar archivo para cerrar cuentas por cobrar en Siigo',parent:null,optional:false},
+  {title:'Actualizar Base de Datos General',desc:'Consolidar garantías de todos los intermediarios',parent:null,optional:false},
+  {title:'Actualizar Dashboard',desc:'Dashboard junta directiva + reporte cobertura por entidad',parent:null,optional:false},
+  {title:'Enviar Estado de Reserva Acumulada',desc:'Enviar PDF de estado de cobertura a cada intermediario',parent:null,optional:false},
+  {title:'Causar Aumento de Reserva',desc:'Causación contable de la nueva reserva',parent:null,optional:false},
+  {title:'Verificar Pago',desc:'Revisar que las entidades hayan pagado',parent:null,optional:false},
+  {title:'Registrar Pago',desc:'Registrar el pago recibido',parent:null,optional:false},
+  {title:'Enviar Recibo de Pago',desc:'Enviar recibo a las organizaciones',parent:null,optional:false},
+];
+
+const FACTURACION_ENTITIES=['Amigo Real','Consolidaridad','Estar','El Socorro','Prevenservicios','Luz Divina','San Jerónimo'];
+
+async function loadProcs(){
+  const{data}=await db.from('processes').select('*').eq('user_id',user.id).order('created_at');
+  procs=data||[];
+  if(!procs.length) await seedFacturacion();
+  else renderProcList();
+}
+
+async function seedFacturacion(){
+  const{data:p}=await db.from('processes').insert({user_id:user.id,title:'Facturación Mensual',description:'Proceso completo de facturación por entidad',category:'facturacion',is_recurring:true,recurrence_type:'monthly',color:'#4361ee'}).select().single();
+  if(!p)return;
+  // Insert steps
+  const stepsToInsert=FACTURACION_STEPS.filter(s=>!s.parent).map((s,i)=>({process_id:p.id,title:s.title,description:s.desc,order_index:i,parent_step_id:null,is_optional:s.optional}));
+  const{data:insertedSteps}=await db.from('process_steps').insert(stepsToInsert).select();
+  // Insert substeps
+  const subSteps=FACTURACION_STEPS.filter(s=>s.parent);
+  for(const sub of subSteps){
+    const parent=insertedSteps?.find(x=>x.title===sub.parent);
+    if(parent) await db.from('process_steps').insert({process_id:p.id,title:sub.title,description:sub.desc,order_index:99,parent_step_id:parent.id,is_optional:sub.optional});
+  }
+  // Insert entities
+  const entitiesToInsert=FACTURACION_ENTITIES.map((n,i)=>({process_id:p.id,name:n,order_index:i}));
+  await db.from('process_entities').insert(entitiesToInsert);
+  procs=[p];
+  await renderProcList();
+  toast('✓ Proceso de Facturación Mensual pre-cargado');
+}
+
+async function renderProcList(){
+  if(!procs.length){document.getElementById('proc-list').innerHTML=`<div class="empty-state"><div class="emoji">⚙️</div><p>No tienes procesos aún. Crea el primero.</p></div>`;return;}
+  // Load steps and entities for all procs
+  const ids=procs.map(p=>p.id);
+  const{data:allSteps}=await db.from('process_steps').select('*').in('process_id',ids);
+  const{data:allEntities}=await db.from('process_entities').select('*').in('process_id',ids).eq('active',true);
+  // Load current period checks
+  const period=getCurrentPeriod();
+  const{data:runs}=await db.from('process_runs').select('*').in('process_id',ids).eq('period',period);
+  let allChecks=[];
+  if(runs?.length){
+    const runIds=runs.map(r=>r.id);
+    const{data:checks}=await db.from('process_checks').select('*').in('run_id',runIds);
+    allChecks=checks||[];
+  }
+  document.getElementById('proc-list').innerHTML=procs.map(p=>{
+    const steps=(allSteps||[]).filter(s=>s.process_id===p.id);
+    const entities=(allEntities||[]).filter(e=>e.process_id===p.id);
+    const run=runs?.find(r=>r.process_id===p.id);
+    const checks=run?allChecks.filter(c=>c.run_id===run.id):[];
+    const totalSteps=steps.length;
+    return`<div class="proc-card" onclick="openProc('${p.id}')">
+      <div class="proc-card-hdr">
+        <div class="proc-icon" style="background:${p.color}22">${p.category==='facturacion'?'💰':'📋'}</div>
+        <div class="proc-info">
+          <div class="proc-title">${p.title}</div>
+          <div class="proc-sub">${totalSteps} pasos · ${entities.length} entidades · ${p.is_recurring?'Mensual':'Una vez'}</div>
+        </div>
+        <div class="proc-actions">
+          <button class="proc-action-btn" onclick="event.stopPropagation();openProcModal('${p.id}')">Editar</button>
+          <button class="proc-action-btn danger" onclick="event.stopPropagation();deleteProc('${p.id}')">Eliminar</button>
+        </div>
+      </div>
+      <div class="entity-bars">${entities.map(e=>{
+        const done=checks.filter(c=>c.entity_id===e.id&&c.done).length;
+        const pct=totalSteps?Math.round(done/totalSteps*100):0;
+        return`<div class="entity-bar">
+          <div class="entity-name">${e.name}</div>
+          <div class="entity-progress"><div class="entity-progress-fill" style="width:${pct}%"></div></div>
+          <div class="entity-pct">${pct}%</div>
+          <div class="entity-count">${done}/${totalSteps}</div>
+        </div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function getCurrentPeriod(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
+function getPeriodLabel(p){const[y,m]=p.split('-');return`${MO[parseInt(m)-1]} ${y}`;}
+function getRecentPeriods(){const periods=[];const n=new Date();for(let i=-1;i<=3;i++){const d=new Date(n.getFullYear(),n.getMonth()+i,1);periods.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return periods;}
+
+async function openProc(id){
+  currentProcId=id;currentPeriod=getCurrentPeriod();
+  document.getElementById('proc-list-view').style.display='none';
+  document.getElementById('proc-detail-view').style.display='';
+  const p=procs.find(x=>x.id===id);
+  document.getElementById('proc-detail-title').textContent=p?.title||'Proceso';
+  renderPeriodSelector();
+  await renderMatrix();
+}
+
+function showProcList(){
+  document.getElementById('proc-list-view').style.display='';
+  document.getElementById('proc-detail-view').style.display='none';
+  currentProcId=null;
+  renderProcList();
+}
+
+function renderPeriodSelector(){
+  const periods=getRecentPeriods();
+  document.getElementById('period-selector').innerHTML=
+    `<span style="font-size:13px;font-weight:600;color:var(--text2);margin-right:4px">Período:</span>`+
+    periods.map(p=>`<button class="period-btn${p===currentPeriod?' active':''}" onclick="changePeriod('${p}')">${getPeriodLabel(p)}</button>`).join('');
+}
+
+async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderMatrix();}
+
+async function renderMatrix(){
+  const{data:steps}=await db.from('process_steps').select('*').eq('process_id',currentProcId).order('order_index');
+  const{data:entities}=await db.from('process_entities').select('*').eq('process_id',currentProcId).eq('active',true).order('order_index');
+  if(!steps||!entities)return;
+  // Get or create run
+  let{data:run}=await db.from('process_runs').select('*').eq('process_id',currentProcId).eq('period',currentPeriod).single();
+  if(!run){
+    const{data:newRun}=await db.from('process_runs').insert({process_id:currentProcId,period:currentPeriod}).select().single();
+    run=newRun;
+    // Seed checks
+    if(run){
+      const checksToInsert=[];
+      steps.forEach(s=>entities.forEach(e=>checksToInsert.push({run_id:run.id,step_id:s.id,entity_id:e.id,done:false})));
+      await db.from('process_checks').insert(checksToInsert);
+    }
+  }
+  const{data:checks}=await db.from('process_checks').select('*').eq('run_id',run.id);
+  const checkMap={};(checks||[]).forEach(c=>checkMap[`${c.step_id}-${c.entity_id}`]=c);
+
+  // Summary
+  const totalChecks=steps.length*entities.length;
+  const doneChecks=(checks||[]).filter(c=>c.done).length;
+  const pct=totalChecks?Math.round(doneChecks/totalChecks*100):0;
+  document.getElementById('proc-summary').innerHTML=`
+    <div class="pps"><div class="pps-n">${entities.length}</div><div class="pps-l">Entidades</div></div>
+    <div class="pps"><div class="pps-n">${steps.length}</div><div class="pps-l">Pasos</div></div>
+    <div class="pps"><div class="pps-n">${doneChecks}</div><div class="pps-l">Completados</div></div>
+    <div class="pps"><div class="pps-n" style="color:var(--accent)">${pct}%</div><div class="pps-l">Progreso total</div></div>`;
+
+  // Header
+  document.getElementById('matrix-head').innerHTML=`<tr>
+    <th class="step-col">Paso</th>
+    ${entities.map(e=>`<th class="entity-col">${e.name}</th>`).join('')}
+  </tr>`;
+
+  // Build ordered steps: parents first, then their children
+  const parents=steps.filter(s=>!s.parent_step_id);
+  const orderedSteps=[];
+  parents.forEach(p=>{orderedSteps.push({...p,isParent:true});steps.filter(s=>s.parent_step_id===p.id).forEach(c=>orderedSteps.push({...c,isParent:false}));});
+
+  // Body
+  document.getElementById('matrix-body').innerHTML=orderedSteps.map(step=>{
+    const isChild=!step.isParent&&step.parent_step_id;
+    // For parent steps that have children, check if all children done for each entity
+    const hasChildren=steps.some(s=>s.parent_step_id===step.id);
+    return`<tr>
+      <td class="step-cell${step.isParent&&hasChildren?' parent':''}${isChild?' child':''}">
+        ${step.title}${step.is_optional?`<span class="step-optional">Opcional</span>`:''}
+        ${step.description?`<div style="font-size:11px;color:var(--text3);margin-top:2px;font-weight:400">${step.description}</div>`:''}
+      </td>
+      ${entities.map(e=>{
+        const ck=checkMap[`${step.id}-${e.id}`];
+        const isDone=ck?.done||false;
+        // Check if blocked (parent step's first substep not done)
+        let blocked=false;
+        if(isChild){
+          const siblings=steps.filter(s=>s.parent_step_id===step.parent_step_id).sort((a,b)=>a.order_index-b.order_index);
+          const myIdx=siblings.findIndex(s=>s.id===step.id);
+          if(myIdx>0){const prevSibling=siblings[myIdx-1];const prevCk=checkMap[`${prevSibling.id}-${e.id}`];blocked=!prevCk?.done;}
+        }
+        return`<td class="check-cell">
+          <button class="mchk${isDone?' on':''}${blocked?' blocked':''}" onclick="${blocked?'':'toggleCheck(\''+step.id+'\',\''+e.id+'\',\''+run.id+'\')'}"></button>
+        </td>`;
+      }).join('')}
+    </tr>`;
+  }).join('');
+
+  // Entity progress footer row
+  document.getElementById('matrix-body').innerHTML+=`<tr class="entity-summary-row">
+    <td class="step-cell">Progreso</td>
+    ${entities.map(e=>{
+      const done=(checks||[]).filter(c=>c.entity_id===e.id&&c.done).length;
+      const pct=steps.length?Math.round(done/steps.length*100):0;
+      return`<td style="text-align:center;padding:8px">
+        <div style="font-size:13px;font-weight:700;color:var(--accent)">${pct}%</div>
+        <div class="prog-mini"><div class="prog-mini-fill" style="width:${pct}%"></div></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">${done}/${steps.length}</div>
+      </td>`;
+    }).join('')}
+  </tr>`;
+}
+
+async function toggleCheck(stepId,entityId,runId){
+  const key=`${stepId}-${entityId}`;
+  const{data:existing}=await db.from('process_checks').select('*').eq('run_id',runId).eq('step_id',stepId).eq('entity_id',entityId).single();
+  if(existing){
+    const done=!existing.done;
+    await db.from('process_checks').update({done,done_at:done?new Date().toISOString():null}).eq('id',existing.id);
+  }else{
+    await db.from('process_checks').insert({run_id:runId,step_id:stepId,entity_id:entityId,done:true,done_at:new Date().toISOString()});
+  }
+  await renderMatrix();
+}
+
+// PROC MODAL
+let editProcId=null;
+async function openProcModal(id){
+  editProcId=id||null;
+  pmEntities=[];pmSteps=[];
+  document.getElementById('proc-modal-title').textContent=id?'Editar proceso':'Nuevo proceso';
+  document.getElementById('pm-title').value='';document.getElementById('pm-desc').value='';
+  document.getElementById('pm-icon').value='📋';document.getElementById('pm-rec').value='monthly';
+  if(id){
+    const p=procs.find(x=>x.id===id);
+    if(p){document.getElementById('pm-title').value=p.title;document.getElementById('pm-desc').value=p.description||'';document.getElementById('pm-rec').value=p.recurrence_type||'monthly';}
+    const{data:ents}=await db.from('process_entities').select('*').eq('process_id',id).eq('active',true).order('order_index');
+    const{data:stps}=await db.from('process_steps').select('*').eq('process_id',id).order('order_index');
+    pmEntities=(ents||[]).map(e=>({id:e.id,name:e.name}));
+    pmSteps=(stps||[]).map(s=>({id:s.id,title:s.title,isSub:!!s.parent_step_id,parentId:s.parent_step_id}));
+  }
+  renderPmEntities();renderPmSteps();
+  document.getElementById('proc-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('pm-title').focus(),100);
+}
+function closeProcModal(){document.getElementById('proc-modal').classList.remove('open');}
+function addEntity(){const v=document.getElementById('pm-entity-input').value.trim();if(!v)return;pmEntities.push({id:null,name:v});document.getElementById('pm-entity-input').value='';renderPmEntities();}
+function removeEntity(i){pmEntities.splice(i,1);renderPmEntities();}
+function renderPmEntities(){document.getElementById('pm-entities').innerHTML=pmEntities.map((e,i)=>`<div class="entity-tag">${e.name}<button onclick="removeEntity(${i})">✕</button></div>`).join('');}
+function addStep(isSub){const inp=document.getElementById(isSub?'pm-substep-input':'pm-step-input');const v=inp.value.trim();if(!v)return;pmSteps.push({id:null,title:v,isSub});inp.value='';renderPmSteps();}
+function removeStep(i){pmSteps.splice(i,1);renderPmSteps();}
+function renderPmSteps(){document.getElementById('pm-steps').innerHTML=pmSteps.map((s,i)=>`<div class="step-item"${s.isSub?' style="padding-left:20px"':''}>
+  ${s.isSub?'<span class="step-item-sub">Sub</span>':''}
+  <input value="${s.title}" oninput="pmSteps[${i}].title=this.value" placeholder="Nombre del paso"/>
+  <button class="step-item-del" onclick="removeStep(${i})">✕</button>
+</div>`).join('');}
+
+async function saveProc(){
+  const title=document.getElementById('pm-title').value.trim();if(!title){document.getElementById('pm-title').focus();return;}
+  const payload={title,description:document.getElementById('pm-desc').value.trim(),is_recurring:document.getElementById('pm-rec').value!=='none',recurrence_type:document.getElementById('pm-rec').value,color:'#4361ee',category:'general'};
+  let procId=editProcId;
+  if(editProcId){
+    await db.from('processes').update(payload).eq('id',editProcId);
+    // Update entities: deactivate all then reactivate/add
+    await db.from('process_entities').update({active:false}).eq('process_id',editProcId);
+    for(let i=0;i<pmEntities.length;i++){
+      const e=pmEntities[i];
+      if(e.id){await db.from('process_entities').update({active:true,order_index:i}).eq('id',e.id);}
+      else{await db.from('process_entities').insert({process_id:editProcId,name:e.name,order_index:i});}
+    }
+    // Update steps: delete and reinsert
+    await db.from('process_steps').delete().eq('process_id',editProcId);
+    await insertSteps(editProcId);
+  }else{
+    payload.user_id=user.id;
+    const{data:np}=await db.from('processes').insert(payload).select().single();
+    if(!np)return;
+    procId=np.id;
+    for(let i=0;i<pmEntities.length;i++) await db.from('process_entities').insert({process_id:procId,name:pmEntities[i].name,order_index:i});
+    await insertSteps(procId);
+    const{data:freshProc}=await db.from('processes').select('*').eq('user_id',user.id).order('created_at');procs=freshProc||[];
+  }
+  closeProcModal();await loadProcs();toast('✓ Proceso guardado');
+}
+
+async function insertSteps(procId){
+  const parents=pmSteps.filter(s=>!s.isSub);
+  const insertedParents=[];
+  for(let i=0;i<parents.length;i++){
+    const{data:ins}=await db.from('process_steps').insert({process_id:procId,title:parents[i].title,order_index:i,parent_step_id:null,is_optional:false}).select().single();
+    insertedParents.push(ins);
+  }
+  let subIdx=0;
+  const subs=pmSteps.filter(s=>s.isSub);
+  for(const sub of subs){
+    const lastParent=insertedParents[insertedParents.length-1];
+    if(lastParent) await db.from('process_steps').insert({process_id:procId,title:sub.title,order_index:subIdx++,parent_step_id:lastParent.id,is_optional:false});
+  }
+}
+
+async function deleteProc(id){
+  if(!confirm('¿Eliminar este proceso y todo su historial?'))return;
+  await db.from('processes').delete().eq('id',id);
+  procs=procs.filter(x=>x.id!==id);
+  renderProcList();toast('Proceso eliminado');
+}
+
+document.getElementById('proc-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeProcModal();});
+document.getElementById('pm-entity-input').addEventListener('keydown',e=>{if(e.key==='Enter')addEntity();});
+document.getElementById('pm-step-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(false);});
+document.getElementById('pm-substep-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(true);});
 </script>
 </body>
 </html>
