@@ -348,6 +348,17 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   .auth-left{display:none}
   .auth-right{width:100%}
 }
+/* HOY PROCESOS WIDGET */
+.hoy-proc-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
+.hoy-proc-card:hover{box-shadow:var(--sh);transform:translateY(-1px);border-color:#d0d8f0}
+.hoy-proc-icon{width:38px;height:38px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hoy-proc-body{flex:1;min-width:0}
+.hoy-proc-title{font-size:13px;font-weight:700;color:var(--text)}
+.hoy-proc-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.hoy-proc-bar{height:6px;background:var(--surface2);border-radius:10px;overflow:hidden;margin-top:8px}
+.hoy-proc-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .4s ease}
+.hoy-proc-pct{font-size:16px;font-weight:700;flex-shrink:0;min-width:44px;text-align:right}
+.pm-task-row{border-top:1.5px solid var(--border);padding-top:1rem;margin-top:.25rem}
 </style>
 </head>
 <body>
@@ -434,6 +445,17 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="abar" id="abar">⚠️ <span id="abar-txt"></span></div>
       <div class="sgrid" id="sgrid"></div>
       <div class="tlist" id="hoy-list"></div>
+      <!-- Procesos del período -->
+      <div id="hoy-procs" style="display:none;margin-top:2rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--text)">⚙️ Procesos del período</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Progreso del mes actual</div>
+          </div>
+          <button class="abt" style="opacity:1" onclick="showPage('procesos')">Ver todos →</button>
+        </div>
+        <div id="hoy-procs-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
     </div>
     <!-- LISTA -->
     <div class="page" id="page-lista">
@@ -516,11 +538,74 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="fr"><label>Nombre del proceso *</label><input id="pm-title" type="text" placeholder="ej: Facturación Mensual"/></div>
     <div class="fr"><label>Descripción</label><input id="pm-desc" type="text" placeholder="Descripción breve..."/></div>
     <div class="f2">
-      <div class="fr"><label>Ícono / color</label>
-        <select id="pm-icon"><option value="📋">📋 Checklist</option><option value="💰">💰 Facturación</option><option value="📊">📊 Reportes</option><option value="⚖️">⚖️ Jurídico</option><option value="👥">👥 Nómina</option><option value="🌎">🌎 Internacional</option><option value="📅">📅 Reuniones</option></select>
+      <div class="fr"><label>Ícono</label>
+        <select id="pm-icon">
+          <option value="📋">📋 Checklist</option>
+          <option value="💰">💰 Facturación</option>
+          <option value="📊">📊 Reportes</option>
+          <option value="⚖️">⚖️ Jurídico</option>
+          <option value="👥">👥 Nómina</option>
+          <option value="🌎">🌎 Internacional</option>
+          <option value="📅">📅 Reuniones</option>
+          <option value="🧾">🧾 Contabilidad</option>
+          <option value="🛒">🛒 Compras</option>
+          <option value="👤">👤 RRHH</option>
+          <option value="📦">📦 Logística</option>
+          <option value="🔧">🔧 Mantenimiento</option>
+          <option value="📣">📣 Marketing</option>
+          <option value="🤝">🤝 Comercial</option>
+          <option value="🏦">🏦 Tesorería</option>
+          <option value="📝">📝 Administrativo</option>
+          <option value="🔒">🔒 Seguridad</option>
+          <option value="🖥️">🖥️ Tecnología</option>
+          <option value="📐">📐 Planeación</option>
+          <option value="🎓">🎓 Capacitación</option>
+        </select>
       </div>
       <div class="fr"><label>Se repite</label>
-        <select id="pm-rec"><option value="monthly">Mensualmente</option><option value="none">No se repite</option></select>
+        <select id="pm-rec">
+          <option value="none">No se repite</option>
+          <option value="daily">📆 Diariamente</option>
+          <option value="weekly">📅 Semanalmente</option>
+          <option value="biweekly">🗓️ Quincenalmente</option>
+          <option value="monthly">📆 Mensualmente</option>
+          <option value="bimonthly">📆 Bimestralmente</option>
+          <option value="quarterly">📆 Trimestralmente</option>
+          <option value="semiannual">📆 Semestralmente</option>
+          <option value="annual">📆 Anualmente</option>
+        </select>
+      </div>
+    </div>
+    <div class="fr">
+      <label>Categoría</label>
+      <select id="pm-cat">
+        <option value="general">General</option>
+        <option value="facturacion">💰 Facturación</option>
+        <option value="nomina">👥 Nómina</option>
+        <option value="contabilidad">🧾 Contabilidad</option>
+        <option value="juridico">⚖️ Jurídico</option>
+        <option value="reportes">📊 Reportes</option>
+        <option value="reuniones">📅 Reuniones</option>
+        <option value="internacional">🌎 Internacional</option>
+        <option value="rrhh">👤 RRHH</option>
+        <option value="compras">🛒 Compras</option>
+      </select>
+    </div>
+    <div class="fr pm-task-row">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--text)">
+        <input type="checkbox" id="pm-as-task" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0"/>
+        Mostrar inicio del proceso como tarea con recordatorio
+      </label>
+      <div id="pm-task-opts" style="display:none;margin-top:10px;padding:12px;background:var(--surface2);border-radius:var(--rs);border:1.5px solid var(--border)">
+        <div class="f2">
+          <div class="fr" style="margin-bottom:0"><label>Días antes</label>
+            <select id="pm-task-alert"><option value="1">1 día antes</option><option value="3" selected>3 días antes</option><option value="7">7 días antes</option><option value="15">15 días antes</option></select>
+          </div>
+          <div class="fr" style="margin-bottom:0"><label>Día del mes</label>
+            <input type="number" id="pm-task-day" min="1" max="28" placeholder="ej: 1" value="1"/>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px">Se creará una tarea periódica «Iniciar: [nombre del proceso]» con alerta anticipada.</div>
       </div>
     </div>
     <div class="fr">
@@ -755,6 +840,40 @@ function renderHoy(){
   const sorted=[...ov.filter(x=>x.due_date!==t),...todT,...soon.filter(x=>!todT.includes(x)),...pend.filter(x=>!x.due_date)];
   const dd=[...new Map(sorted.map(x=>[x.id,x])).values()];
   document.getElementById('hoy-list').innerHTML=dd.length?dd.map(tHTML).join(''):`<div class="empty-state"><div class="emoji">🎉</div><p>Todo al día, sin tareas pendientes</p></div>`;
+  renderHoyProcs();
+}
+
+async function renderHoyProcs(){
+  if(!procs||!procs.length){document.getElementById('hoy-procs').style.display='none';return;}
+  document.getElementById('hoy-procs').style.display='';
+  const period=getCurrentPeriod();
+  const ids=procs.map(p=>p.id);
+  const{data:allSteps}=await db.from('process_steps').select('*').in('process_id',ids);
+  const{data:allEntities}=await db.from('process_entities').select('*').in('process_id',ids).eq('active',true);
+  const{data:runs}=await db.from('process_runs').select('*').in('process_id',ids).eq('period',period);
+  let allChecks=[];
+  if(runs?.length){const runIds=runs.map(r=>r.id);const{data:c}=await db.from('process_checks').select('*').in('run_id',runIds);allChecks=c||[];}
+  const ICONS={'facturacion':'💰','general':'📋','nomina':'👥','juridico':'⚖️','reuniones':'📅','internacional':'🌎','reportes':'📊','contabilidad':'🧾','compras':'🛒','rrhh':'👤'};
+  document.getElementById('hoy-procs-list').innerHTML=procs.map(p=>{
+    const steps=(allSteps||[]).filter(s=>s.process_id===p.id);
+    const entities=(allEntities||[]).filter(e=>e.process_id===p.id);
+    const run=runs?.find(r=>r.process_id===p.id);
+    const checks=run?allChecks.filter(c=>c.run_id===run.id):[];
+    const totalCells=steps.length*entities.length;
+    const done=checks.filter(c=>c.done).length;
+    const pct=totalCells?Math.round(done/totalCells*100):0;
+    const ic=ICONS[p.category]||p.icon||'📋';
+    const recLabel=RECURRENCE_LABELS[p.recurrence_type]||'Mensual';
+    return`<div class="hoy-proc-card" onclick="showPage('procesos');setTimeout(()=>openProc('${p.id}'),80)">
+      <div class="hoy-proc-icon" style="background:${p.color||'#4361ee'}22">${ic}</div>
+      <div class="hoy-proc-body">
+        <div class="hoy-proc-title">${p.title}</div>
+        <div class="hoy-proc-meta">${steps.length} pasos · ${entities.length} entidades · ${recLabel}</div>
+        <div class="hoy-proc-bar"><div class="hoy-proc-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="hoy-proc-pct" style="color:${pct===100?'var(--green)':'var(--accent)'}">${pct}%</div>
+    </div>`;
+  }).join('');
 }
 function renderLista(){
   const sort=document.getElementById('ss').value,filter=document.getElementById('sf').value,cat=document.getElementById('sc').value;
@@ -892,6 +1011,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeF
 let procs=[],procSteps=[],procEntities=[],currentProcId=null,currentPeriod=null;
 let pmEntities=[],pmSteps=[];
 
+const RECURRENCE_LABELS={none:'Una vez',daily:'Diario',weekly:'Semanal',biweekly:'Quincenal',monthly:'Mensual',bimonthly:'Bimestral',quarterly:'Trimestral',semiannual:'Semestral',annual:'Anual'};
+
 const FACTURACION_STEPS=[
   {title:'Reporte Recibido',desc:'Información de garantías del mes enviada por la mutual',parent:null,optional:false},
   {title:'Actualizar Datos en Plantillas',desc:'Actualizar plantillas Excel con nueva información',parent:null,optional:false},
@@ -971,7 +1092,7 @@ async function renderProcList(){
     const totalSteps=steps.length;
     return`<div class="proc-card" onclick="openProc('${p.id}')">
       <div class="proc-card-hdr">
-        <div class="proc-icon" style="background:${p.color}22">${p.category==='facturacion'?'💰':'📋'}</div>
+        <div class="proc-icon" style="background:${p.color||'#4361ee'}22">${p.icon||(p.category==='facturacion'?'💰':'📋')}</div>
         <div class="proc-info">
           <div class="proc-title">${p.title}</div>
           <div class="proc-sub">${totalSteps} pasos · ${entities.length} entidades · ${p.is_recurring?'Mensual':'Una vez'}</div>
@@ -1127,9 +1248,18 @@ async function openProcModal(id){
   document.getElementById('proc-modal-title').textContent=id?'Editar proceso':'Nuevo proceso';
   document.getElementById('pm-title').value='';document.getElementById('pm-desc').value='';
   document.getElementById('pm-icon').value='📋';document.getElementById('pm-rec').value='monthly';
+  document.getElementById('pm-cat').value='general';
+  document.getElementById('pm-as-task').checked=false;
+  document.getElementById('pm-task-opts').style.display='none';
   if(id){
     const p=procs.find(x=>x.id===id);
-    if(p){document.getElementById('pm-title').value=p.title;document.getElementById('pm-desc').value=p.description||'';document.getElementById('pm-rec').value=p.recurrence_type||'monthly';}
+    if(p){
+      document.getElementById('pm-title').value=p.title;
+      document.getElementById('pm-desc').value=p.description||'';
+      document.getElementById('pm-rec').value=p.recurrence_type||'monthly';
+      document.getElementById('pm-cat').value=p.category||'general';
+      if(p.icon) document.getElementById('pm-icon').value=p.icon;
+    }
     const{data:ents}=await db.from('process_entities').select('*').eq('process_id',id).eq('active',true).order('order_index');
     const{data:stps}=await db.from('process_steps').select('*').eq('process_id',id).order('order_index');
     pmEntities=(ents||[]).map(e=>({id:e.id,name:e.name}));
@@ -1153,18 +1283,25 @@ function renderPmSteps(){document.getElementById('pm-steps').innerHTML=pmSteps.m
 
 async function saveProc(){
   const title=document.getElementById('pm-title').value.trim();if(!title){document.getElementById('pm-title').focus();return;}
-  const payload={title,description:document.getElementById('pm-desc').value.trim(),is_recurring:document.getElementById('pm-rec').value!=='none',recurrence_type:document.getElementById('pm-rec').value,color:'#4361ee',category:'general'};
+  const recType=document.getElementById('pm-rec').value;
+  const payload={
+    title,
+    description:document.getElementById('pm-desc').value.trim(),
+    is_recurring:recType!=='none',
+    recurrence_type:recType,
+    color:'#4361ee',
+    category:document.getElementById('pm-cat').value,
+    icon:document.getElementById('pm-icon').value
+  };
   let procId=editProcId;
   if(editProcId){
     await db.from('processes').update(payload).eq('id',editProcId);
-    // Update entities: deactivate all then reactivate/add
     await db.from('process_entities').update({active:false}).eq('process_id',editProcId);
     for(let i=0;i<pmEntities.length;i++){
       const e=pmEntities[i];
       if(e.id){await db.from('process_entities').update({active:true,order_index:i}).eq('id',e.id);}
       else{await db.from('process_entities').insert({process_id:editProcId,name:e.name,order_index:i});}
     }
-    // Update steps: delete and reinsert
     await db.from('process_steps').delete().eq('process_id',editProcId);
     await insertSteps(editProcId);
   }else{
@@ -1176,7 +1313,23 @@ async function saveProc(){
     await insertSteps(procId);
     const{data:freshProc}=await db.from('processes').select('*').eq('user_id',user.id).order('created_at');procs=freshProc||[];
   }
-  closeProcModal();await loadProcs();toast('✓ Proceso guardado');
+  // Create reminder task if requested
+  const asTask=document.getElementById('pm-as-task').checked;
+  if(asTask&&!editProcId){
+    const alertDays=parseInt(document.getElementById('pm-task-alert').value)||3;
+    const taskDay=parseInt(document.getElementById('pm-task-day').value)||1;
+    const now=new Date();
+    let dueD=new Date(now.getFullYear(),now.getMonth(),taskDay);
+    if(dueD<now) dueD=new Date(now.getFullYear(),now.getMonth()+1,taskDay);
+    const dueStr=dueD.toISOString().slice(0,10);
+    const taskPayload={user_id:user.id,title:`Iniciar proceso: ${title}`,notes:`Recordatorio periódico para comenzar el proceso «${title}».`,priority:'alta',urgency:'urgente',category:payload.category||'general',due_date:dueStr,is_recurring:recType!=='none',recurrence_type:recType==='monthly'?'monthly_days':'none',recurrence_days:recType==='monthly'?[taskDay]:null,alert_days:alertDays,done:false,updated_at:new Date().toISOString()};
+    await db.from('tasks').insert(taskPayload);
+    await loadTasks();
+    toast(`✓ Proceso guardado + tarea recordatorio creada`);
+  }else{
+    toast('✓ Proceso guardado');
+  }
+  closeProcModal();await loadProcs();
 }
 
 async function insertSteps(procId){
@@ -1205,6 +1358,7 @@ document.getElementById('proc-modal').addEventListener('click',e=>{if(e.target==
 document.getElementById('pm-entity-input').addEventListener('keydown',e=>{if(e.key==='Enter')addEntity();});
 document.getElementById('pm-step-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(false);});
 document.getElementById('pm-substep-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(true);});
+document.getElementById('pm-as-task').addEventListener('change',e=>{document.getElementById('pm-task-opts').style.display=e.target.checked?'':'none';});
 </script>
 </body>
 </html>
