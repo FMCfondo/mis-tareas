@@ -485,7 +485,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="tbar">
         <select id="ss" onchange="renderLista()"><option value="created">Más recientes</option><option value="date">Por fecha</option><option value="priority">Por prioridad</option><option value="quad">Por cuadrante</option></select>
         <select id="sf" onchange="renderLista()"><option value="pending">Pendientes</option><option value="all">Todas</option><option value="done">Completadas</option><option value="q1">Q1 · Hacer ya</option><option value="q2">Q2 · Planificar</option><option value="q3">Q3 · Delegar</option><option value="q4">Q4 · Eliminar</option></select>
-        <select id="sc" onchange="renderLista()"><option value="all">Todas las categorías</option><option value="impuestos">Impuestos</option><option value="nomina">Nómina</option><option value="reuniones">Reuniones</option><option value="juridico">Jurídico</option><option value="foro">Foro</option><option value="general">General</option></select>
+        <select id="sc" onchange="renderLista()"><option value="all">Todas las categorías</option><option value="general">General</option><option value="impuestos">💰 Impuestos</option><option value="nomina">👥 Nómina</option><option value="reuniones">📅 Reuniones</option><option value="juridico">⚖️ Jurídico</option><option value="foro">🌎 Foro</option><option value="facturacion">💳 Facturación</option><option value="contabilidad">🧾 Contabilidad</option><option value="tesoreria">🏦 Tesorería</option><option value="reportes">📊 Reportes</option><option value="rrhh">👤 RRHH</option><option value="compras">🛒 Compras</option><option value="logistica">📦 Logística</option><option value="marketing">📣 Marketing</option><option value="comercial">🤝 Comercial</option><option value="tecnologia">🖥️ Tecnología</option><option value="cobertura">🛡️ Cobertura</option><option value="junta">🎯 Junta Directiva</option></select>
       </div>
       <div class="tlist" id="lista-list"></div>
     </div>
@@ -718,10 +718,47 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="fr"><label>Urgencia</label><select id="fu"><option value="urgente">⚡ Urgente</option><option value="normal" selected>📌 Normal</option><option value="puede-esperar">🕐 Puede esperar</option></select></div>
     </div>
     <div class="f2">
-      <div class="fr"><label>Categoría</label><select id="fc"><option value="general">General</option><option value="impuestos">💰 Impuestos/DIAN</option><option value="nomina">👥 Nómina</option><option value="reuniones">📅 Reuniones</option><option value="juridico">⚖️ Jurídico</option><option value="foro">🌎 Foro Internacional</option></select></div>
+      <div class="fr"><label>Categoría</label>
+        <select id="fc" onchange="toggleCustomCat('fc','fc-custom')">
+          <option value="general">General</option>
+          <option value="impuestos">💰 Impuestos / DIAN</option>
+          <option value="nomina">👥 Nómina</option>
+          <option value="reuniones">📅 Reuniones</option>
+          <option value="juridico">⚖️ Jurídico</option>
+          <option value="foro">🌎 Foro Internacional</option>
+          <option value="facturacion">💳 Facturación</option>
+          <option value="contabilidad">🧾 Contabilidad</option>
+          <option value="tesoreria">🏦 Tesorería</option>
+          <option value="reportes">📊 Reportes</option>
+          <option value="rrhh">👤 RRHH</option>
+          <option value="compras">🛒 Compras</option>
+          <option value="logistica">📦 Logística</option>
+          <option value="marketing">📣 Marketing</option>
+          <option value="comercial">🤝 Comercial</option>
+          <option value="tecnologia">🖥️ Tecnología</option>
+          <option value="cobertura">🛡️ Cobertura / Riesgo</option>
+          <option value="junta">🎯 Junta Directiva</option>
+          <option value="otra">✏️ Otra (escribir)...</option>
+        </select>
+        <input type="text" id="fc-custom" placeholder="Escribe la categoría..." style="display:none;margin-top:6px"/>
+      </div>
       <div class="fr"><label>Fecha límite</label><input type="date" id="fd"/></div>
     </div>
-    <div class="fr"><label>¿Periódica?</label><select id="frec" onchange="toggleRec()"><option value="none">No se repite</option><option value="monthly_days">📆 Días del mes (ej: 15 y 30)</option><option value="weekly">📅 Días de la semana</option></select></div>
+    <div class="fr"><label>Periodicidad</label>
+      <select id="frec" onchange="toggleRec()">
+        <option value="none">No se repite</option>
+        <option value="monthly_days">📆 Días del mes (ej: 15 y 30)</option>
+        <option value="weekly">📅 Días de la semana</option>
+        <option value="daily">🔁 Diariamente</option>
+        <option value="every3">🔁 Cada 3 días</option>
+        <option value="biweekly">🗓️ Quincenalmente</option>
+        <option value="monthly">📆 Mensualmente</option>
+        <option value="bimonthly">📆 Bimestralmente</option>
+        <option value="quarterly">📆 Trimestralmente</option>
+        <option value="semiannual">📆 Semestralmente</option>
+        <option value="annual">📆 Anualmente</option>
+      </select>
+    </div>
     <div id="rec-wrap" style="display:none"><div class="fr"><label id="rlbl">Días</label><div class="ropts" id="ropts"></div></div></div>
     <div class="fr"><label>Alerta anticipada</label><select id="fal"><option value="0">Sin alerta</option><option value="1">1 día antes</option><option value="3" selected>3 días antes</option><option value="7">7 días antes</option><option value="15">15 días antes</option></select></div>
     <div class="factions"><button class="bcancel" onclick="closeModal()">Cancelar</button><button class="bsave" onclick="saveTask()">Guardar tarea</button></div>
@@ -844,10 +881,22 @@ function expandRec(){
     }
   });
 }
+function toggleCustomCat(selId,inpId){
+  const v=document.getElementById(selId).value;
+  const inp=document.getElementById(inpId);
+  inp.style.display=v==='otra'?'':'none';
+  if(v==='otra')setTimeout(()=>inp.focus(),50);
+}
+function getCatValue(selId,inpId){
+  const v=document.getElementById(selId).value;
+  if(v==='otra'){const c=document.getElementById(inpId).value.trim();return c||'general';}
+  return v;
+}
 async function saveTask(){
   const title=document.getElementById('ft').value.trim();if(!title){document.getElementById('ft').focus();return;}
   const rt=document.getElementById('frec').value;
-  const p={user_id:user.id,title,notes:document.getElementById('fn').value.trim(),priority:document.getElementById('fp').value,urgency:document.getElementById('fu').value,category:document.getElementById('fc').value,due_date:document.getElementById('fd').value||null,is_recurring:rt!=='none',recurrence_type:rt,recurrence_days:rt!=='none'?getSelDays():null,alert_days:parseInt(document.getElementById('fal').value),updated_at:new Date().toISOString()};
+  const cat=getCatValue('fc','fc-custom');
+  const p={user_id:user.id,title,notes:document.getElementById('fn').value.trim(),priority:document.getElementById('fp').value,urgency:document.getElementById('fu').value,category:cat,due_date:document.getElementById('fd').value||null,is_recurring:rt!=='none',recurrence_type:rt,recurrence_days:rt!=='none'?getSelDays():null,alert_days:parseInt(document.getElementById('fal').value),updated_at:new Date().toISOString()};
   if(editId){await db.from('tasks').update(p).eq('id',editId);toast('✓ Tarea actualizada');}
   else{p.done=false;await db.from('tasks').insert(p);toast('✓ Tarea creada');}
   closeModal();await loadTasks();refresh();
@@ -1072,17 +1121,28 @@ function updatePom(){const m=Math.floor(pomS/60),s=pomS%60;document.getElementBy
 function openModal(date){
   editId=null;document.getElementById('mtitle').textContent='Nueva tarea';
   ['ft','fn'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fp').value='media';document.getElementById('fu').value='normal';document.getElementById('fc').value='general';
+  document.getElementById('fp').value='media';document.getElementById('fu').value='normal';
+  document.getElementById('fc').value='general';document.getElementById('fc-custom').style.display='none';
   document.getElementById('fd').value=date||'';document.getElementById('frec').value='none';document.getElementById('fal').value='3';
   toggleRec();document.getElementById('task-modal').classList.add('open');setTimeout(()=>document.getElementById('ft').focus(),100);
 }
+const KNOWN_CATS=['general','impuestos','nomina','reuniones','juridico','foro','facturacion','contabilidad','tesoreria','reportes','rrhh','compras','logistica','marketing','comercial','tecnologia','cobertura','junta'];
 function openEdit(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;editId=id;
   document.getElementById('mtitle').textContent='Editar tarea';
   document.getElementById('ft').value=t.title;document.getElementById('fn').value=t.notes||'';
   document.getElementById('fp').value=t.priority;document.getElementById('fu').value=t.urgency;
-  document.getElementById('fc').value=t.category||'general';document.getElementById('fd').value=t.due_date||'';
+  document.getElementById('fd').value=t.due_date||'';
   document.getElementById('frec').value=t.recurrence_type||'none';document.getElementById('fal').value=t.alert_days||3;
+  // Handle category — known or custom
+  if(t.category&&!KNOWN_CATS.includes(t.category)){
+    document.getElementById('fc').value='otra';
+    document.getElementById('fc-custom').value=t.category;
+    document.getElementById('fc-custom').style.display='';
+  }else{
+    document.getElementById('fc').value=t.category||'general';
+    document.getElementById('fc-custom').style.display='none';
+  }
   toggleRec();if(t.recurrence_days)document.querySelectorAll('.rday').forEach(el=>el.classList.toggle('sel',t.recurrence_days.includes(parseInt(el.dataset.v))));
   document.getElementById('task-modal').classList.add('open');
 }
@@ -1223,7 +1283,7 @@ async function openProc(id){
   const p=procs.find(x=>x.id===id);
   document.getElementById('proc-detail-title').textContent=p?.title||'Proceso';
   renderPeriodSelector();
-  await renderMatrix();
+  await renderProcMatrix();
 }
 
 function showProcList(){
@@ -1240,10 +1300,9 @@ function renderPeriodSelector(){
     periods.map(p=>`<button class="period-btn${p===currentPeriod?' active':''}" onclick="changePeriod('${p}')">${getPeriodLabel(p)}</button>`).join('');
 }
 
-async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderMatrix();}
+async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderProcMatrix();}
 
-async function renderMatrix(){
-  const{data:steps}=await db.from('process_steps').select('*').eq('process_id',currentProcId).order('order_index');
+async function renderProcMatrix(){
   const{data:entities}=await db.from('process_entities').select('*').eq('process_id',currentProcId).eq('active',true).order('order_index');
   if(!steps||!entities)return;
   // Get or create run
@@ -1333,7 +1392,7 @@ async function toggleCheck(stepId,entityId,runId){
   }else{
     await db.from('process_checks').insert({run_id:runId,step_id:stepId,entity_id:entityId,done:true,done_at:new Date().toISOString()});
   }
-  await renderMatrix();
+  await renderProcMatrix();
 }
 
 // PROC MODAL
