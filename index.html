@@ -326,16 +326,26 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .pps-l{font-size:11px;color:var(--text2);margin-top:2px;font-weight:500}
 
 /* CONFIG */
-.config-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.5rem}
+.config-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:0}
 .config-card-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:1.25rem}
 .cfg-msg{font-size:12px;margin-top:8px;min-height:16px;font-weight:600}
 .cfg-msg.ok{color:var(--green)}.cfg-msg.err{color:var(--red)}
 /* AVANCES */
-.avance-item{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 var(--rs) var(--rs) 0;padding:8px 12px;font-size:12px}
-.avance-date{font-size:10px;color:var(--text3);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
-.avance-text{color:var(--text2);line-height:1.5}
-.avance-pct{display:inline-block;font-size:10px;font-weight:700;background:var(--accent-l);color:var(--accent);padding:1px 7px;border-radius:10px;margin-top:4px}
-
+.avance-wrap{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none}
+.avance-wrap.open{display:block}
+.avance-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.avance-item{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 var(--rs) var(--rs) 0;padding:7px 10px}
+.avance-date{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.avance-text{font-size:12px;color:var(--text2);line-height:1.5}
+.avance-pct{display:inline-block;font-size:10px;font-weight:700;background:var(--accent-l);color:var(--accent);padding:1px 7px;border-radius:10px;margin-top:3px}
+.avance-new{display:flex;flex-direction:column;gap:6px;background:var(--surface2);border-radius:var(--rs);padding:10px;border:1.5px dashed var(--border)}
+.avance-new textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;resize:none;min-height:60px;transition:border-color .2s}
+.avance-new textarea:focus{border-color:var(--accent)}
+.avance-new-row{display:flex;gap:8px;align-items:center}
+.avance-new-row input[type=date]{font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--rs);font-family:inherit;background:var(--surface);color:var(--text);outline:none}
+.avance-new-row input[type=range]{flex:1}
+.avance-save-btn{padding:6px 14px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-family:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+.avance-save-btn:hover{opacity:.88}
 /* MODAL PROCESO */
 .step-list-editor{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:220px;overflow-y:auto}
 .step-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--rs);border:1px solid var(--border)}
@@ -424,7 +434,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
   <div class="sidebar">
     <div class="logo">
       <div class="logo-title">Mis Tareas</div>
-      <div class="logo-sub">FMC · Adrian Hincapié</div>
+      <div class="logo-sub">FMC · <span id="logo-name">Adrian</span></div>
     </div>
     <div class="nav-section">Principal</div>
     <button class="ni active" id="nav-hoy" onclick="showPage('hoy')"><span class="ni-ic">☀️</span>Hoy<span class="nbadge" id="badge-hoy" style="display:none">0</span></button>
@@ -437,7 +447,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="nav-section">Productividad</div>
     <button class="ni" id="nav-focus" onclick="openFocus()"><span class="ni-ic">🧠</span>Modo foco</button>
     <div class="sfooter">
-      <div class="ucard" onclick="showPage('config')" style="cursor:pointer" title="Abrir configuración">
+      <div class="ucard" onclick="showPage('config')" style="cursor:pointer" title="Configuración">
         <div class="uavatar" id="uavatar">A</div>
         <div style="flex:1;min-width:0"><div class="uname" id="uname-display">Adrian</div><div class="uemail" id="uemail"></div></div>
         <div style="font-size:22px;color:var(--text3);flex-shrink:0;line-height:1">⚙</div>
@@ -475,7 +485,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="tbar">
         <select id="ss" onchange="renderLista()"><option value="created">Más recientes</option><option value="date">Por fecha</option><option value="priority">Por prioridad</option><option value="quad">Por cuadrante</option></select>
         <select id="sf" onchange="renderLista()"><option value="pending">Pendientes</option><option value="all">Todas</option><option value="done">Completadas</option><option value="q1">Q1 · Hacer ya</option><option value="q2">Q2 · Planificar</option><option value="q3">Q3 · Delegar</option><option value="q4">Q4 · Eliminar</option></select>
-        <select id="sc" onchange="renderLista()"><option value="all">Todas las categorías</option><option value="general">General</option><option value="impuestos">💰 Impuestos</option><option value="nomina">👥 Nómina</option><option value="reuniones">📅 Reuniones</option><option value="juridico">⚖️ Jurídico</option><option value="foro">🌎 Foro</option><option value="facturacion">💳 Facturación</option><option value="contabilidad">🧾 Contabilidad</option><option value="tesoreria">🏦 Tesorería</option><option value="reportes">📊 Reportes</option><option value="rrhh">👤 RRHH</option><option value="compras">🛒 Compras</option><option value="logistica">📦 Logística</option><option value="marketing">📣 Marketing</option><option value="comercial">🤝 Comercial</option><option value="tecnologia">🖥️ Tecnología</option><option value="cobertura">🛡️ Cobertura</option><option value="junta">🎯 Junta Directiva</option></select>
+        <select id="sc" onchange="renderLista()"><option value="all">Todas las categorías</option><option value="impuestos">Impuestos</option><option value="nomina">Nómina</option><option value="reuniones">Reuniones</option><option value="juridico">Jurídico</option><option value="foro">Foro</option><option value="general">General</option></select>
       </div>
       <div class="tlist" id="lista-list"></div>
     </div>
@@ -532,11 +542,11 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
         </div>
         <div class="config-card">
           <div class="config-card-title">🛡️ Seguridad</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.6">El doble factor de autenticación (2FA) se configura automáticamente al iniciar sesión por primera vez en un nuevo dispositivo usando Google Authenticator o Authy.</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.6">El doble factor de autenticación (2FA) se configura al iniciar sesión en un dispositivo nuevo con Google Authenticator o Authy.</div>
           <div style="margin-top:10px;font-size:13px;font-weight:600;color:var(--green)">✓ 2FA disponible en tu cuenta</div>
         </div>
         <div class="config-card">
-          <div class="config-card-title">📊 Resumen de tu cuenta</div>
+          <div class="config-card-title">📊 Resumen</div>
           <div id="cfg-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
         </div>
       </div>
@@ -619,28 +629,18 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     </div>
     <div class="fr">
       <label>Categoría</label>
-      <select id="pm-cat" onchange="toggleCustomCat('pm-cat','pm-cat-custom')">
+      <select id="pm-cat">
         <option value="general">General</option>
-        <option value="facturacion">💳 Facturación</option>
+        <option value="facturacion">💰 Facturación</option>
         <option value="nomina">👥 Nómina</option>
         <option value="contabilidad">🧾 Contabilidad</option>
         <option value="juridico">⚖️ Jurídico</option>
         <option value="reportes">📊 Reportes</option>
         <option value="reuniones">📅 Reuniones</option>
-        <option value="internacional">🌎 Foro Internacional</option>
+        <option value="internacional">🌎 Internacional</option>
         <option value="rrhh">👤 RRHH</option>
         <option value="compras">🛒 Compras</option>
-        <option value="impuestos">💰 Impuestos / DIAN</option>
-        <option value="tesoreria">🏦 Tesorería</option>
-        <option value="logistica">📦 Logística</option>
-        <option value="marketing">📣 Marketing</option>
-        <option value="comercial">🤝 Comercial</option>
-        <option value="tecnologia">🖥️ Tecnología</option>
-        <option value="cobertura">🛡️ Cobertura / Riesgo</option>
-        <option value="junta">🎯 Junta Directiva</option>
-        <option value="otra">✏️ Otra (escribir)...</option>
       </select>
-      <input type="text" id="pm-cat-custom" placeholder="Escribe la categoría..." style="display:none;margin-top:6px"/>
     </div>
     <div class="fr pm-task-row">
       <label style="display:flex;align-items:center;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--text)">
@@ -718,47 +718,10 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
       <div class="fr"><label>Urgencia</label><select id="fu"><option value="urgente">⚡ Urgente</option><option value="normal" selected>📌 Normal</option><option value="puede-esperar">🕐 Puede esperar</option></select></div>
     </div>
     <div class="f2">
-      <div class="fr"><label>Categoría</label>
-        <select id="fc" onchange="toggleCustomCat('fc','fc-custom')">
-          <option value="general">General</option>
-          <option value="impuestos">💰 Impuestos / DIAN</option>
-          <option value="nomina">👥 Nómina</option>
-          <option value="reuniones">📅 Reuniones</option>
-          <option value="juridico">⚖️ Jurídico</option>
-          <option value="foro">🌎 Foro Internacional</option>
-          <option value="facturacion">💳 Facturación</option>
-          <option value="contabilidad">🧾 Contabilidad</option>
-          <option value="tesoreria">🏦 Tesorería</option>
-          <option value="reportes">📊 Reportes</option>
-          <option value="rrhh">👤 RRHH</option>
-          <option value="compras">🛒 Compras</option>
-          <option value="logistica">📦 Logística</option>
-          <option value="marketing">📣 Marketing</option>
-          <option value="comercial">🤝 Comercial</option>
-          <option value="tecnologia">🖥️ Tecnología</option>
-          <option value="cobertura">🛡️ Cobertura / Riesgo</option>
-          <option value="junta">🎯 Junta Directiva</option>
-          <option value="otra">✏️ Otra (escribir)...</option>
-        </select>
-        <input type="text" id="fc-custom" placeholder="Escribe la categoría..." style="display:none;margin-top:6px"/>
-      </div>
+      <div class="fr"><label>Categoría</label><select id="fc"><option value="general">General</option><option value="impuestos">💰 Impuestos/DIAN</option><option value="nomina">👥 Nómina</option><option value="reuniones">📅 Reuniones</option><option value="juridico">⚖️ Jurídico</option><option value="foro">🌎 Foro Internacional</option></select></div>
       <div class="fr"><label>Fecha límite</label><input type="date" id="fd"/></div>
     </div>
-    <div class="fr"><label>Periodicidad</label>
-      <select id="frec" onchange="toggleRec()">
-        <option value="none">No se repite</option>
-        <option value="monthly_days">📆 Días del mes (ej: 15 y 30)</option>
-        <option value="weekly">📅 Días de la semana</option>
-        <option value="daily">🔁 Diariamente</option>
-        <option value="every3">🔁 Cada 3 días</option>
-        <option value="biweekly">🗓️ Quincenalmente</option>
-        <option value="monthly">📆 Mensualmente</option>
-        <option value="bimonthly">📆 Bimestralmente</option>
-        <option value="quarterly">📆 Trimestralmente</option>
-        <option value="semiannual">📆 Semestralmente</option>
-        <option value="annual">📆 Anualmente</option>
-      </select>
-    </div>
+    <div class="fr"><label>¿Periódica?</label><select id="frec" onchange="toggleRec()"><option value="none">No se repite</option><option value="monthly_days">📆 Días del mes (ej: 15 y 30)</option><option value="weekly">📅 Días de la semana</option></select></div>
     <div id="rec-wrap" style="display:none"><div class="fr"><label id="rlbl">Días</label><div class="ropts" id="ropts"></div></div></div>
     <div class="fr"><label>Alerta anticipada</label><select id="fal"><option value="0">Sin alerta</option><option value="1">1 día antes</option><option value="3" selected>3 días antes</option><option value="7">7 días antes</option><option value="15">15 días antes</option></select></div>
     <div class="factions"><button class="bcancel" onclick="closeModal()">Cancelar</button><button class="bsave" onclick="saveTask()">Guardar tarea</button></div>
@@ -840,15 +803,19 @@ async function doVerify(){
   if(error){msg('a-msg2','Código incorrecto');return;}
   await boot();
 }
+function applyDisplayName(){
+  const name=localStorage.getItem('fmc_display_name')||(user?user.email.split('@')[0]:'Adrian');
+  document.getElementById('uname-display').textContent=name;
+  document.getElementById('uavatar').textContent=name[0].toUpperCase();
+  document.getElementById('logo-name').textContent=name;
+}
 async function boot(){
   const{data:{session}}=await db.auth.getSession();if(!session?.user)return;
   user=session.user;
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('uemail').textContent=user.email;
-  const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
-  document.getElementById('uname-display').textContent=savedName;
-  document.getElementById('uavatar').textContent=savedName[0].toUpperCase();
+  applyDisplayName();
   await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
 }
 async function doSignOut(){await db.auth.signOut();location.reload();}
@@ -858,9 +825,7 @@ db.auth.onAuthStateChange(async(ev,session)=>{
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('uemail').textContent=user.email;
-    const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
-    document.getElementById('uname-display').textContent=savedName;
-    document.getElementById('uavatar').textContent=savedName[0].toUpperCase();
+    applyDisplayName();
     await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
   }
   if(ev==='SIGNED_OUT'){document.getElementById('auth-screen').style.display='flex';document.getElementById('app').style.display='none';user=null;}
@@ -879,22 +844,10 @@ function expandRec(){
     }
   });
 }
-function getCatValue(selectId,customId){
-  const sel=document.getElementById(selectId).value;
-  if(sel==='otra'){const custom=document.getElementById(customId).value.trim();return custom||'general';}
-  return sel;
-}
-function toggleCustomCat(selectId,customId){
-  const sel=document.getElementById(selectId).value;
-  const inp=document.getElementById(customId);
-  inp.style.display=sel==='otra'?'':'none';
-  if(sel==='otra')setTimeout(()=>inp.focus(),50);
-}
 async function saveTask(){
   const title=document.getElementById('ft').value.trim();if(!title){document.getElementById('ft').focus();return;}
   const rt=document.getElementById('frec').value;
-  const cat=getCatValue('fc','fc-custom');
-  const p={user_id:user.id,title,notes:document.getElementById('fn').value.trim(),priority:document.getElementById('fp').value,urgency:document.getElementById('fu').value,category:cat,due_date:document.getElementById('fd').value||null,is_recurring:rt!=='none',recurrence_type:rt,recurrence_days:rt!=='none'?getSelDays():null,alert_days:parseInt(document.getElementById('fal').value),updated_at:new Date().toISOString()};
+  const p={user_id:user.id,title,notes:document.getElementById('fn').value.trim(),priority:document.getElementById('fp').value,urgency:document.getElementById('fu').value,category:document.getElementById('fc').value,due_date:document.getElementById('fd').value||null,is_recurring:rt!=='none',recurrence_type:rt,recurrence_days:rt!=='none'?getSelDays():null,alert_days:parseInt(document.getElementById('fal').value),updated_at:new Date().toISOString()};
   if(editId){await db.from('tasks').update(p).eq('id',editId);toast('✓ Tarea actualizada');}
   else{p.done=false;await db.from('tasks').insert(p);toast('✓ Tarea creada');}
   closeModal();await loadTasks();refresh();
@@ -992,6 +945,8 @@ function renderLista(){
 }
 function tHTML(t){
   const q=quad(t),ov=isOv(t);
+  const avances=t.avances||[];
+  const lastAvance=avances.length?avances[avances.length-1]:null;
   return`<div class="tc${t.done?' done':''}${ov?' ovdue':''}" id="tc-${t.id}">
     <div class="tc-strip ${q}"></div>
     <div class="tctop">
@@ -1003,16 +958,53 @@ function tHTML(t){
           <span class="bdg b${t.priority}">${t.priority}</span>
           ${t.category&&t.category!=='general'?`<span class="bdg bcat">${t.category}</span>`:''}
           ${t.due_date?`<span class="dtag${ov?' ov':''}">📅 ${fmtD(t.due_date)}${ov?' · vencida':''}</span>`:''}
+          ${avances.length?`<span class="bdg" style="background:var(--accent-l);color:var(--accent);cursor:pointer" onclick="toggleAvances('${t.id}')">📈 ${avances.length} avance${avances.length>1?'s':''}</span>`:''}
         </div>
       </div>
       <div class="tca">
         ${t.notes?`<button class="abt" onclick="togNotes('${t.id}')">ver nota</button>`:''}
+        <button class="abt" style="color:var(--accent)" onclick="openAvanceForm('${t.id}')">+ avance</button>
         <button class="abt" onclick="openEdit('${t.id}')">editar</button>
         <button class="abt del" onclick="delTask('${t.id}')">borrar</button>
       </div>
     </div>
     ${t.notes?`<div class="tcn" id="tn-${t.id}">${t.notes}</div>`:''}
+    <div class="avance-wrap" id="aw-${t.id}">
+      ${avances.length?`<div class="avance-list">${avances.map(a=>`<div class="avance-item"><div class="avance-date">${fmtD(a.date)}${a.time?' · '+a.time:''}</div><div class="avance-text">${a.text}</div>${a.pct?`<span class="avance-pct">${a.pct}% completado</span>`:''}</div>`).join('')}</div>`:''}
+      <div class="avance-new" id="anf-${t.id}" style="display:none">
+        <textarea id="ant-${t.id}" placeholder="¿Qué avanzaste? ¿Qué falta? ¿Hay algún bloqueo?"></textarea>
+        <div class="avance-new-row">
+          <span style="font-size:11px;color:var(--text2);font-weight:600">Nueva fecha límite:</span>
+          <input type="date" id="and-${t.id}" value="${t.due_date||''}"/>
+          <span style="font-size:11px;color:var(--text2);font-weight:600">Avance:</span>
+          <input type="range" id="anp-${t.id}" min="0" max="100" step="5" value="50" oninput="document.getElementById('anpv-${t.id}').textContent=this.value+'%'"/>
+          <span id="anpv-${t.id}" style="font-size:12px;font-weight:700;color:var(--accent);min-width:36px">50%</span>
+          <button class="avance-save-btn" onclick="saveAvanceInline('${t.id}')">Guardar</button>
+        </div>
+      </div>
+    </div>
   </div>`;
+}
+function toggleAvances(id){const el=document.getElementById('aw-'+id);if(el){el.classList.toggle('open');}}
+function openAvanceForm(id){
+  const aw=document.getElementById('aw-'+id);
+  const anf=document.getElementById('anf-'+id);
+  if(aw&&anf){aw.classList.add('open');anf.style.display='';document.getElementById('ant-'+id)?.focus();}
+}
+async function saveAvanceInline(id){
+  const text=document.getElementById('ant-'+id)?.value.trim();
+  if(!text){document.getElementById('ant-'+id)?.focus();return;}
+  const pct=parseInt(document.getElementById('anp-'+id)?.value||50);
+  const newDate=document.getElementById('and-'+id)?.value;
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  const now=new Date();
+  const avance={date:now.toISOString().slice(0,10),time:now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),text,pct};
+  const avances=[...(t.avances||[]),avance];
+  const update={avances,updated_at:now.toISOString()};
+  if(newDate&&newDate!==t.due_date)update.due_date=newDate;
+  await db.from('tasks').update(update).eq('id',id);
+  t.avances=avances;if(update.due_date)t.due_date=update.due_date;
+  toast('✓ Avance registrado');refresh();
 }
 function togNotes(id){const e=document.getElementById('tn-'+id);if(!e)return;e.classList.toggle('open');const b=document.querySelector(`#tc-${id} .abt`);if(b)b.textContent=e.classList.contains('open')?'ocultar nota':'ver nota';}
 function renderCal(){
@@ -1081,7 +1073,6 @@ function openModal(date){
   editId=null;document.getElementById('mtitle').textContent='Nueva tarea';
   ['ft','fn'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fp').value='media';document.getElementById('fu').value='normal';document.getElementById('fc').value='general';
-  document.getElementById('fc-custom').style.display='none';
   document.getElementById('fd').value=date||'';document.getElementById('frec').value='none';document.getElementById('fal').value='3';
   toggleRec();document.getElementById('task-modal').classList.add('open');setTimeout(()=>document.getElementById('ft').focus(),100);
 }
@@ -1091,10 +1082,6 @@ function openEdit(id){
   document.getElementById('ft').value=t.title;document.getElementById('fn').value=t.notes||'';
   document.getElementById('fp').value=t.priority;document.getElementById('fu').value=t.urgency;
   document.getElementById('fc').value=t.category||'general';document.getElementById('fd').value=t.due_date||'';
-  // Handle custom category
-  const knownCats=['general','impuestos','nomina','reuniones','juridico','foro','facturacion','contabilidad','tesoreria','reportes','rrhh','compras','logistica','marketing','comercial','tecnologia','cobertura','junta'];
-  if(t.category&&!knownCats.includes(t.category)){document.getElementById('fc').value='otra';document.getElementById('fc-custom').value=t.category;document.getElementById('fc-custom').style.display='';}
-  else{document.getElementById('fc-custom').style.display='none';}
   document.getElementById('frec').value=t.recurrence_type||'none';document.getElementById('fal').value=t.alert_days||3;
   toggleRec();if(t.recurrence_days)document.querySelectorAll('.rday').forEach(el=>el.classList.toggle('sel',t.recurrence_days.includes(parseInt(el.dataset.v))));
   document.getElementById('task-modal').classList.add('open');
@@ -1227,7 +1214,7 @@ async function renderProcList(){
 
 function getCurrentPeriod(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;}
 function getPeriodLabel(p){const[y,m]=p.split('-');return`${MO[parseInt(m)-1]} ${y}`;}
-function getRecentPeriods(){const periods=[];const n=new Date();for(let i=-3;i<=12;i++){const d=new Date(n.getFullYear(),n.getMonth()+i,1);periods.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return periods;}
+function getRecentPeriods(){const periods=[];const n=new Date();for(let i=-1;i<=3;i++){const d=new Date(n.getFullYear(),n.getMonth()+i,1);periods.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);}return periods;}
 
 async function openProc(id){
   currentProcId=id;currentPeriod=getCurrentPeriod();
@@ -1236,7 +1223,7 @@ async function openProc(id){
   const p=procs.find(x=>x.id===id);
   document.getElementById('proc-detail-title').textContent=p?.title||'Proceso';
   renderPeriodSelector();
-  await renderProcMatrix();
+  await renderMatrix();
 }
 
 function showProcList(){
@@ -1253,9 +1240,10 @@ function renderPeriodSelector(){
     periods.map(p=>`<button class="period-btn${p===currentPeriod?' active':''}" onclick="changePeriod('${p}')">${getPeriodLabel(p)}</button>`).join('');
 }
 
-async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderProcMatrix();}
+async function changePeriod(p){currentPeriod=p;renderPeriodSelector();await renderMatrix();}
 
-async function renderProcMatrix(){
+async function renderMatrix(){
+  const{data:steps}=await db.from('process_steps').select('*').eq('process_id',currentProcId).order('order_index');
   const{data:entities}=await db.from('process_entities').select('*').eq('process_id',currentProcId).eq('active',true).order('order_index');
   if(!steps||!entities)return;
   // Get or create run
@@ -1345,7 +1333,7 @@ async function toggleCheck(stepId,entityId,runId){
   }else{
     await db.from('process_checks').insert({run_id:runId,step_id:stepId,entity_id:entityId,done:true,done_at:new Date().toISOString()});
   }
-  await renderProcMatrix();
+  await renderMatrix();
 }
 
 // PROC MODAL
@@ -1357,7 +1345,6 @@ async function openProcModal(id){
   document.getElementById('pm-title').value='';document.getElementById('pm-desc').value='';
   document.getElementById('pm-icon').value='📋';document.getElementById('pm-rec').value='monthly';
   document.getElementById('pm-cat').value='general';
-  document.getElementById('pm-cat-custom').style.display='none';
   document.getElementById('pm-as-task').checked=false;
   document.getElementById('pm-task-opts').style.display='none';
   if(id){
@@ -1367,10 +1354,6 @@ async function openProcModal(id){
       document.getElementById('pm-desc').value=p.description||'';
       document.getElementById('pm-rec').value=p.recurrence_type||'monthly';
       document.getElementById('pm-cat').value=p.category||'general';
-      // Handle custom category
-      const knownProcCats=['general','facturacion','nomina','contabilidad','juridico','reportes','reuniones','internacional','rrhh','compras','impuestos','tesoreria','logistica','marketing','comercial','tecnologia','cobertura','junta'];
-      if(p.category&&!knownProcCats.includes(p.category)){document.getElementById('pm-cat').value='otra';document.getElementById('pm-cat-custom').value=p.category;document.getElementById('pm-cat-custom').style.display='';}
-      else{document.getElementById('pm-cat-custom').style.display='none';}
       if(p.icon) document.getElementById('pm-icon').value=p.icon;
     }
     const{data:ents}=await db.from('process_entities').select('*').eq('process_id',id).eq('active',true).order('order_index');
@@ -1403,7 +1386,7 @@ async function saveProc(){
     is_recurring:recType!=='none',
     recurrence_type:recType,
     color:'#4361ee',
-    category:getCatValue('pm-cat','pm-cat-custom'),
+    category:document.getElementById('pm-cat').value,
     icon:document.getElementById('pm-icon').value
   };
   let procId=editProcId;
@@ -1472,39 +1455,6 @@ document.getElementById('pm-entity-input').addEventListener('keydown',e=>{if(e.k
 document.getElementById('pm-step-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(false);});
 document.getElementById('pm-substep-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(true);});
 document.getElementById('pm-as-task').addEventListener('change',e=>{document.getElementById('pm-task-opts').style.display=e.target.checked?'':'none';});
-
-// ══ CONFIGURACIÓN ═════════════════════════════════════════
-function renderConfig(){
-  const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
-  document.getElementById('cfg-name').value=savedName;
-  document.getElementById('cfg-email').value=user.email;
-  document.getElementById('cfg-pw1').value='';document.getElementById('cfg-pw2').value='';
-  document.getElementById('cfg-profile-msg').textContent='';document.getElementById('cfg-pw-msg').textContent='';
-  document.getElementById('cfg-stats').innerHTML=`
-    <div class="pps"><div class="pps-n">${tasks.length}</div><div class="pps-l">Total tareas</div></div>
-    <div class="pps"><div class="pps-n">${tasks.filter(t=>t.done).length}</div><div class="pps-l">Completadas</div></div>
-    <div class="pps"><div class="pps-n">${tasks.filter(t=>!t.done).length}</div><div class="pps-l">Pendientes</div></div>
-    <div class="pps"><div class="pps-n">${procs.length}</div><div class="pps-l">Procesos</div></div>`;
-}
-function cfgMsg(id,txt,ok){const e=document.getElementById(id);e.textContent=txt;e.className='cfg-msg '+(ok?'ok':'err');}
-function saveProfile(){
-  const name=document.getElementById('cfg-name').value.trim();
-  if(!name){cfgMsg('cfg-profile-msg','Ingresa un nombre',false);return;}
-  localStorage.setItem('fmc_display_name',name);
-  document.getElementById('uname-display').textContent=name;
-  document.getElementById('uavatar').textContent=name[0].toUpperCase();
-  cfgMsg('cfg-profile-msg','✓ Nombre actualizado',true);toast('✓ Nombre guardado');
-}
-async function savePassword(){
-  const pw1=document.getElementById('cfg-pw1').value,pw2=document.getElementById('cfg-pw2').value;
-  if(!pw1){cfgMsg('cfg-pw-msg','Ingresa la nueva contraseña',false);return;}
-  if(pw1.length<6){cfgMsg('cfg-pw-msg','Mínimo 6 caracteres',false);return;}
-  if(pw1!==pw2){cfgMsg('cfg-pw-msg','Las contraseñas no coinciden',false);return;}
-  const{error}=await db.auth.updateUser({password:pw1});
-  if(error){cfgMsg('cfg-pw-msg','Error: '+error.message,false);return;}
-  document.getElementById('cfg-pw1').value='';document.getElementById('cfg-pw2').value='';
-  cfgMsg('cfg-pw-msg','✓ Contraseña actualizada correctamente',true);toast('✓ Contraseña cambiada');
-}
 </script>
 </body>
 </html>
