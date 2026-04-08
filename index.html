@@ -325,6 +325,17 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .pps-n{font-size:22px;font-weight:700;font-family:'Playfair Display',serif}
 .pps-l{font-size:11px;color:var(--text2);margin-top:2px;font-weight:500}
 
+/* CONFIG */
+.config-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.5rem}
+.config-card-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:1.25rem}
+.cfg-msg{font-size:12px;margin-top:8px;min-height:16px;font-weight:600}
+.cfg-msg.ok{color:var(--green)}.cfg-msg.err{color:var(--red)}
+/* AVANCES */
+.avance-item{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 var(--rs) var(--rs) 0;padding:8px 12px;font-size:12px}
+.avance-date{font-size:10px;color:var(--text3);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.avance-text{color:var(--text2);line-height:1.5}
+.avance-pct{display:inline-block;font-size:10px;font-weight:700;background:var(--accent-l);color:var(--accent);padding:1px 7px;border-radius:10px;margin-top:4px}
+
 /* MODAL PROCESO */
 .step-list-editor{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:220px;overflow-y:auto}
 .step-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:var(--rs);border:1px solid var(--border)}
@@ -418,17 +429,18 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="nav-section">Principal</div>
     <button class="ni active" id="nav-hoy" onclick="showPage('hoy')"><span class="ni-ic">☀️</span>Hoy<span class="nbadge" id="badge-hoy" style="display:none">0</span></button>
     <button class="ni" id="nav-lista" onclick="showPage('lista')"><span class="ni-ic">📋</span>Todas las tareas</button>
+    <button class="ni" id="nav-procesos" onclick="showPage('procesos')"><span class="ni-ic">⚙️</span>Procesos</button>
     <div class="nav-section">Vistas</div>
     <button class="ni" id="nav-calendario" onclick="showPage('calendario')"><span class="ni-ic">📅</span>Calendario</button>
     <button class="ni" id="nav-anual" onclick="showPage('anual')"><span class="ni-ic">📆</span>Vista anual</button>
     <button class="ni" id="nav-eisenhower" onclick="showPage('eisenhower')"><span class="ni-ic">🎯</span>Matriz Eisenhower</button>
     <div class="nav-section">Productividad</div>
-    <button class="ni" id="nav-procesos" onclick="showPage('procesos')"><span class="ni-ic">⚙️</span>Procesos</button>
     <button class="ni" id="nav-focus" onclick="openFocus()"><span class="ni-ic">🧠</span>Modo foco</button>
     <div class="sfooter">
-      <div class="ucard">
+      <div class="ucard" onclick="showPage('config')" style="cursor:pointer" title="Abrir configuración">
         <div class="uavatar" id="uavatar">A</div>
-        <div><div class="uname">Adrian</div><div class="uemail" id="uemail"></div></div>
+        <div style="flex:1;min-width:0"><div class="uname" id="uname-display">Adrian</div><div class="uemail" id="uemail"></div></div>
+        <div style="font-size:22px;color:var(--text3);flex-shrink:0;line-height:1">⚙</div>
       </div>
       <button class="blogout" onclick="doSignOut()">Cerrar sesión</button>
     </div>
@@ -498,6 +510,35 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
         <div id="mq2" class="qcard q2" style="grid-row:1;grid-column:3"></div>
         <div id="mq3" class="qcard q3" style="grid-row:2;grid-column:2"></div>
         <div id="mq4" class="qcard q4" style="grid-row:2;grid-column:3"></div>
+      </div>
+    </div>
+    <!-- CONFIGURACIÓN -->
+    <div class="page" id="page-config">
+      <div class="pghdr"><div class="pghdr-left"><h2>Configuración</h2><p>Perfil, contraseña y preferencias</p></div></div>
+      <div style="max-width:520px;display:flex;flex-direction:column;gap:16px">
+        <div class="config-card">
+          <div class="config-card-title">👤 Perfil</div>
+          <div class="fr"><label>Nombre para mostrar</label><input id="cfg-name" type="text" placeholder="Tu nombre"/></div>
+          <div class="fr"><label>Email</label><input id="cfg-email" type="email" disabled style="opacity:.6;cursor:not-allowed"/></div>
+          <button class="bsave" onclick="saveProfile()" style="width:100%">Guardar nombre</button>
+          <div class="cfg-msg" id="cfg-profile-msg"></div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">🔒 Cambiar contraseña</div>
+          <div class="fr"><label>Nueva contraseña</label><input id="cfg-pw1" type="password" placeholder="Mínimo 6 caracteres"/></div>
+          <div class="fr"><label>Confirmar contraseña</label><input id="cfg-pw2" type="password" placeholder="Repite la contraseña"/></div>
+          <button class="bsave" onclick="savePassword()" style="width:100%">Cambiar contraseña</button>
+          <div class="cfg-msg" id="cfg-pw-msg"></div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">🛡️ Seguridad</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.6">El doble factor de autenticación (2FA) se configura automáticamente al iniciar sesión por primera vez en un nuevo dispositivo usando Google Authenticator o Authy.</div>
+          <div style="margin-top:10px;font-size:13px;font-weight:600;color:var(--green)">✓ 2FA disponible en tu cuenta</div>
+        </div>
+        <div class="config-card">
+          <div class="config-card-title">📊 Resumen de tu cuenta</div>
+          <div id="cfg-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+        </div>
       </div>
     </div>
     <!-- PROCESOS -->
@@ -804,9 +845,10 @@ async function boot(){
   user=session.user;
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').style.display='block';
-  const emailShort=user.email.split('@')[0];
   document.getElementById('uemail').textContent=user.email;
-  document.getElementById('uavatar').textContent=emailShort[0].toUpperCase();
+  const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
+  document.getElementById('uname-display').textContent=savedName;
+  document.getElementById('uavatar').textContent=savedName[0].toUpperCase();
   await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
 }
 async function doSignOut(){await db.auth.signOut();location.reload();}
@@ -816,7 +858,9 @@ db.auth.onAuthStateChange(async(ev,session)=>{
     document.getElementById('auth-screen').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('uemail').textContent=user.email;
-    document.getElementById('uavatar').textContent=user.email[0].toUpperCase();
+    const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
+    document.getElementById('uname-display').textContent=savedName;
+    document.getElementById('uavatar').textContent=savedName[0].toUpperCase();
     await loadTasks();await loadProcs();showPage('hoy');reqNotif();checkAlerts();
   }
   if(ev==='SIGNED_OUT'){document.getElementById('auth-screen').style.display='flex';document.getElementById('app').style.display='none';user=null;}
@@ -877,6 +921,7 @@ function showPage(p){
   document.getElementById('nav-'+p)?.classList.add('active');
   if(p==='hoy')renderHoy();if(p==='lista')renderLista();if(p==='calendario')renderCal();if(p==='anual')renderAnual();if(p==='eisenhower')renderMatrix();
   if(p==='procesos'){renderProcList();}
+  if(p==='config'){renderConfig();}
 }
 function refresh(){const a=document.querySelector('.page.active')?.id.replace('page-','');if(a)showPage(a);}
 
@@ -1428,6 +1473,39 @@ document.getElementById('pm-entity-input').addEventListener('keydown',e=>{if(e.k
 document.getElementById('pm-step-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(false);});
 document.getElementById('pm-substep-input').addEventListener('keydown',e=>{if(e.key==='Enter')addStep(true);});
 document.getElementById('pm-as-task').addEventListener('change',e=>{document.getElementById('pm-task-opts').style.display=e.target.checked?'':'none';});
+
+// ══ CONFIGURACIÓN ═════════════════════════════════════════
+function renderConfig(){
+  const savedName=localStorage.getItem('fmc_display_name')||user.email.split('@')[0];
+  document.getElementById('cfg-name').value=savedName;
+  document.getElementById('cfg-email').value=user.email;
+  document.getElementById('cfg-pw1').value='';document.getElementById('cfg-pw2').value='';
+  document.getElementById('cfg-profile-msg').textContent='';document.getElementById('cfg-pw-msg').textContent='';
+  document.getElementById('cfg-stats').innerHTML=`
+    <div class="pps"><div class="pps-n">${tasks.length}</div><div class="pps-l">Total tareas</div></div>
+    <div class="pps"><div class="pps-n">${tasks.filter(t=>t.done).length}</div><div class="pps-l">Completadas</div></div>
+    <div class="pps"><div class="pps-n">${tasks.filter(t=>!t.done).length}</div><div class="pps-l">Pendientes</div></div>
+    <div class="pps"><div class="pps-n">${procs.length}</div><div class="pps-l">Procesos</div></div>`;
+}
+function cfgMsg(id,txt,ok){const e=document.getElementById(id);e.textContent=txt;e.className='cfg-msg '+(ok?'ok':'err');}
+function saveProfile(){
+  const name=document.getElementById('cfg-name').value.trim();
+  if(!name){cfgMsg('cfg-profile-msg','Ingresa un nombre',false);return;}
+  localStorage.setItem('fmc_display_name',name);
+  document.getElementById('uname-display').textContent=name;
+  document.getElementById('uavatar').textContent=name[0].toUpperCase();
+  cfgMsg('cfg-profile-msg','✓ Nombre actualizado',true);toast('✓ Nombre guardado');
+}
+async function savePassword(){
+  const pw1=document.getElementById('cfg-pw1').value,pw2=document.getElementById('cfg-pw2').value;
+  if(!pw1){cfgMsg('cfg-pw-msg','Ingresa la nueva contraseña',false);return;}
+  if(pw1.length<6){cfgMsg('cfg-pw-msg','Mínimo 6 caracteres',false);return;}
+  if(pw1!==pw2){cfgMsg('cfg-pw-msg','Las contraseñas no coinciden',false);return;}
+  const{error}=await db.auth.updateUser({password:pw1});
+  if(error){cfgMsg('cfg-pw-msg','Error: '+error.message,false);return;}
+  document.getElementById('cfg-pw1').value='';document.getElementById('cfg-pw2').value='';
+  cfgMsg('cfg-pw-msg','✓ Contraseña actualizada correctamente',true);toast('✓ Contraseña cambiada');
+}
 </script>
 </body>
 </html>
