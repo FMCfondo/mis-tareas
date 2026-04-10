@@ -656,28 +656,28 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     <div class="f2">
       <div class="fr"><label>Categoría</label>
         <select id="pm-icon" onchange="toggleCustomCat('pm-icon','pm-icon-custom')">
-          <option value="📋">📋 General / Checklist</option>
-          <option value="💰">💰 Facturación</option>
-          <option value="📊">📊 Reportes</option>
-          <option value="⚖️">⚖️ Jurídico</option>
-          <option value="👥">👥 Nómina</option>
-          <option value="🌎">🌎 Internacional</option>
-          <option value="📅">📅 Reuniones</option>
-          <option value="🧾">🧾 Contabilidad</option>
-          <option value="🛒">🛒 Compras</option>
-          <option value="👤">👤 RRHH</option>
-          <option value="📦">📦 Logística</option>
-          <option value="🔧">🔧 Mantenimiento</option>
-          <option value="📣">📣 Marketing</option>
-          <option value="🤝">🤝 Comercial</option>
-          <option value="🏦">🏦 Tesorería</option>
-          <option value="📝">📝 Administrativo</option>
-          <option value="🔒">🔒 Seguridad</option>
-          <option value="🖥️">🖥️ Tecnología</option>
-          <option value="📐">📐 Planeación</option>
-          <option value="🎓">🎓 Capacitación</option>
-          <option value="🛡️">🛡️ Cobertura / Riesgo</option>
-          <option value="🎯">🎯 Junta Directiva</option>
+          <option value="checklist">📋 General / Checklist</option>
+          <option value="facturacion">💰 Facturación</option>
+          <option value="reportes">📊 Reportes</option>
+          <option value="juridico">⚖️ Jurídico</option>
+          <option value="nomina">👥 Nómina</option>
+          <option value="internacional">🌎 Internacional</option>
+          <option value="reuniones">📅 Reuniones</option>
+          <option value="contabilidad">🧾 Contabilidad</option>
+          <option value="compras">🛒 Compras</option>
+          <option value="rrhh">👤 RRHH</option>
+          <option value="logistica">📦 Logística</option>
+          <option value="mantenimiento">🔧 Mantenimiento</option>
+          <option value="marketing">📣 Marketing</option>
+          <option value="comercial">🤝 Comercial</option>
+          <option value="tesoreria">🏦 Tesorería</option>
+          <option value="administrativo">📝 Administrativo</option>
+          <option value="seguridad">🔒 Seguridad</option>
+          <option value="tecnologia">🖥️ Tecnología</option>
+          <option value="planeacion">📐 Planeación</option>
+          <option value="capacitacion">🎓 Capacitación</option>
+          <option value="cobertura">🛡️ Cobertura / Riesgo</option>
+          <option value="junta">🎯 Junta Directiva</option>
           <option value="otra">✏️ Otra (escribir)...</option>
         </select>
         <input type="text" id="pm-icon-custom" placeholder="Escribe la categoría..." style="display:none;margin-top:6px"/>
@@ -1022,7 +1022,7 @@ async function renderHoyProcs(){
     const totalCells=steps.length*entities.length;
     const done=checks.filter(c=>c.done).length;
     const pct=totalCells?Math.round(done/totalCells*100):0;
-    const ic=ICONS[p.category]||p.icon||'📋';
+    const ic=CAT_EMOJI[p.icon||p.category]||'📋';
     const recLabel=RECURRENCE_LABELS[p.recurrence_type]||'Mensual';
     return`<div class="hoy-proc-card" onclick="showPage('procesos');setTimeout(()=>openProc('${p.id}'),80)">
       <div class="hoy-proc-icon" style="background:${p.color||'#4361ee'}22">${ic}</div>
@@ -1221,6 +1221,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeF
 let procs=[],procSteps=[],procEntities=[],currentProcId=null,currentPeriod=null;
 let pmEntities=[],pmSteps=[];
 
+const CAT_EMOJI={checklist:'📋',facturacion:'💰',reportes:'📊',juridico:'⚖️',nomina:'👥',internacional:'🌎',reuniones:'📅',contabilidad:'🧾',compras:'🛒',rrhh:'👤',logistica:'📦',mantenimiento:'🔧',marketing:'📣',comercial:'🤝',tesoreria:'🏦',administrativo:'📝',seguridad:'🔒',tecnologia:'🖥️',planeacion:'📐',capacitacion:'🎓',cobertura:'🛡️',junta:'🎯'};
 const RECURRENCE_LABELS={none:'Una vez',daily:'Diario',weekly:'Semanal',biweekly:'Quincenal',monthly:'Mensual',bimonthly:'Bimestral',quarterly:'Trimestral',semiannual:'Semestral',annual:'Anual'};
 
 const FACTURACION_STEPS=[
@@ -1302,7 +1303,7 @@ async function renderProcList(){
     const totalSteps=steps.length;
     return`<div class="proc-card" onclick="openProc('${p.id}')">
       <div class="proc-card-hdr">
-        <div class="proc-icon" style="background:${p.color||'#4361ee'}22">${p.icon||(p.category==='facturacion'?'💰':'📋')}</div>
+        <div class="proc-icon" style="background:${p.color||'#4361ee'}22">${CAT_EMOJI[p.icon||p.category]||'📋'}</div>
         <div class="proc-info">
           <div class="proc-title">${p.title}</div>
           <div class="proc-sub">${totalSteps} pasos · ${entities.length} entidades · ${p.is_recurring?'Mensual':'Una vez'}</div>
@@ -1462,7 +1463,7 @@ async function openProcModal(id){
   pmEntities=[];pmSteps=[];
   document.getElementById('proc-modal-title').textContent=id?'Editar proceso':'Nuevo proceso';
   document.getElementById('pm-title').value='';document.getElementById('pm-desc').value='';
-  document.getElementById('pm-icon').value='📋';
+  document.getElementById('pm-icon').value='checklist';
   document.getElementById('pm-icon-custom').style.display='none';
   document.getElementById('pm-icon-custom').value='';
   document.getElementById('pm-rec').value='monthly';
@@ -1477,7 +1478,7 @@ async function openProcModal(id){
       // Set icon/category — check if it's a known option or custom
       const iconSel=document.getElementById('pm-icon');
       const knownVals=[...iconSel.options].map(o=>o.value);
-      const iconVal=p.icon||'📋';
+      const iconVal=p.icon||p.category||'checklist';
       if(knownVals.includes(iconVal)){
         iconSel.value=iconVal;
         document.getElementById('pm-icon-custom').style.display='none';
