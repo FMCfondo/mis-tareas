@@ -1049,7 +1049,6 @@ function renderLista(){
 function tHTML(t){
   const q=quad(t),ov=isOv(t);
   const avances=t.avances||[];
-  const lastAvance=avances.length?avances[avances.length-1]:null;
   return`<div class="tc${t.done?' done':''}${ov?' ovdue':''}" id="tc-${t.id}">
     <div class="tc-strip ${q}"></div>
     <div class="tctop">
@@ -1074,31 +1073,35 @@ function tHTML(t){
     ${t.notes?`<div class="tcn" id="tn-${t.id}">${t.notes}</div>`:''}
     <div class="avance-wrap" id="aw-${t.id}">
       ${avances.length?`<div class="avance-list">${avances.map(a=>`<div class="avance-item"><div class="avance-date">${fmtD(a.date)}${a.time?' · '+a.time:''}</div><div class="avance-text">${a.text}</div>${a.pct?`<span class="avance-pct">${a.pct}% completado</span>`:''}</div>`).join('')}</div>`:''}
-      <div class="avance-new" id="anf-${t.id}" style="display:none">
-        <textarea id="ant-${t.id}" placeholder="¿Qué avanzaste? ¿Qué falta? ¿Hay algún bloqueo?"></textarea>
+      <div class="avance-new" data-taskid="${t.id}" style="display:none">
+        <textarea class="av-text" placeholder="¿Qué avanzaste? ¿Qué falta? ¿Hay algún bloqueo?"></textarea>
         <div class="avance-new-row">
           <span style="font-size:11px;color:var(--text2);font-weight:600">Nueva fecha límite:</span>
-          <input type="date" id="and-${t.id}" value="${t.due_date||''}"/>
+          <input type="date" class="av-date" value="${t.due_date||''}"/>
           <span style="font-size:11px;color:var(--text2);font-weight:600">Avance:</span>
-          <input type="range" id="anp-${t.id}" min="0" max="100" step="5" value="50" oninput="document.getElementById('anpv-${t.id}').textContent=this.value+'%'"/>
-          <span id="anpv-${t.id}" style="font-size:12px;font-weight:700;color:var(--accent);min-width:36px">50%</span>
+          <input type="range" class="av-pct" min="0" max="100" step="5" value="50" oninput="this.nextElementSibling.textContent=this.value+'%'"/>
+          <span class="av-pct-val" style="font-size:12px;font-weight:700;color:var(--accent);min-width:36px">50%</span>
           <button class="avance-save-btn" onclick="saveAvanceInline('${t.id}')">Guardar</button>
         </div>
       </div>
     </div>
   </div>`;
 }
-function toggleAvances(id){const el=document.getElementById('aw-'+id);if(el){el.classList.toggle('open');}}
+function toggleAvances(id){const el=document.getElementById('aw-'+id);if(el)el.classList.toggle('open');}
 function openAvanceForm(id){
-  const aw=document.getElementById('aw-'+id);
-  const anf=document.getElementById('anf-'+id);
-  if(aw&&anf){aw.classList.add('open');anf.style.display='';document.getElementById('ant-'+id)?.focus();}
+  const aw=document.getElementById('aw-'+id);if(!aw)return;
+  const anf=aw.querySelector('.avance-new');if(!anf)return;
+  aw.classList.add('open');
+  anf.style.display='';
+  anf.querySelector('.av-text')?.focus();
 }
 async function saveAvanceInline(id){
-  const text=document.getElementById('ant-'+id)?.value.trim();
-  if(!text){document.getElementById('ant-'+id)?.focus();return;}
-  const pct=parseInt(document.getElementById('anp-'+id)?.value||50);
-  const newDate=document.getElementById('and-'+id)?.value;
+  const aw=document.getElementById('aw-'+id);if(!aw)return;
+  const anf=aw.querySelector('.avance-new');if(!anf)return;
+  const text=anf.querySelector('.av-text')?.value.trim();
+  if(!text){anf.querySelector('.av-text')?.focus();return;}
+  const pct=parseInt(anf.querySelector('.av-pct')?.value||50);
+  const newDate=anf.querySelector('.av-date')?.value;
   const t=tasks.find(x=>x.id===id);if(!t)return;
   const now=new Date();
   const avance={date:now.toISOString().slice(0,10),time:now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),text,pct};
