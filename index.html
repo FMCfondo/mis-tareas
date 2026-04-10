@@ -1462,8 +1462,10 @@ async function openProcModal(id){
   pmEntities=[];pmSteps=[];
   document.getElementById('proc-modal-title').textContent=id?'Editar proceso':'Nuevo proceso';
   document.getElementById('pm-title').value='';document.getElementById('pm-desc').value='';
-  document.getElementById('pm-icon').value='📋';document.getElementById('pm-rec').value='monthly';
-  document.getElementById('pm-cat').value='general';
+  document.getElementById('pm-icon').value='📋';
+  document.getElementById('pm-icon-custom').style.display='none';
+  document.getElementById('pm-icon-custom').value='';
+  document.getElementById('pm-rec').value='monthly';
   document.getElementById('pm-as-task').checked=false;
   document.getElementById('pm-task-opts').style.display='none';
   if(id){
@@ -1472,8 +1474,18 @@ async function openProcModal(id){
       document.getElementById('pm-title').value=p.title;
       document.getElementById('pm-desc').value=p.description||'';
       document.getElementById('pm-rec').value=p.recurrence_type||'monthly';
-      document.getElementById('pm-cat').value=p.category||'general';
-      if(p.icon) document.getElementById('pm-icon').value=p.icon;
+      // Set icon/category — check if it's a known option or custom
+      const iconSel=document.getElementById('pm-icon');
+      const knownVals=[...iconSel.options].map(o=>o.value);
+      const iconVal=p.icon||'📋';
+      if(knownVals.includes(iconVal)){
+        iconSel.value=iconVal;
+        document.getElementById('pm-icon-custom').style.display='none';
+      } else {
+        iconSel.value='otra';
+        document.getElementById('pm-icon-custom').value=iconVal;
+        document.getElementById('pm-icon-custom').style.display='';
+      }
     }
     const{data:ents}=await db.from('process_entities').select('*').eq('process_id',id).eq('active',true).order('order_index');
     const{data:stps}=await db.from('process_steps').select('*').eq('process_id',id).order('order_index');
@@ -1505,7 +1517,7 @@ async function saveProc(){
     is_recurring:recType!=='none',
     recurrence_type:recType,
     color:'#4361ee',
-    category:document.getElementById('pm-cat').value,
+    category:getCatValue('pm-icon','pm-icon-custom'),
     icon:document.getElementById('pm-icon').value
   };
   let procId=editProcId;
