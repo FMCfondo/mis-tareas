@@ -1086,13 +1086,23 @@ function tHTML(t){
     </div>
   </div>`;
 }
-function toggleAvances(id){const el=document.getElementById('aw-'+id);if(el)el.classList.toggle('open');}
+function togNotes(id){
+  const tc=document.getElementById('tc-'+id);if(!tc)return;
+  const e=tc.querySelector('.tcn');if(!e)return;
+  e.classList.toggle('open');
+  const b=tc.querySelector('[data-action="nota"]');
+  if(b)b.textContent=e.classList.contains('open')?'ocultar nota':'ver nota';
+}
+function toggleAvances(id){
+  const el=document.getElementById('aw-'+id);if(el)el.classList.toggle('open');
+}
 function openAvanceForm(id){
-  const aw=document.getElementById('aw-'+id);if(!aw)return;
+  const tc=document.getElementById('tc-'+id);if(!tc)return;
+  const aw=tc.querySelector('.avance-wrap');if(!aw)return;
   const anf=aw.querySelector('.avance-new');if(!anf)return;
   aw.classList.add('open');
-  anf.style.display='';
-  anf.querySelector('.av-text')?.focus();
+  anf.style.display='block';
+  setTimeout(()=>anf.querySelector('.av-text')?.focus(),50);
 }
 async function saveAvanceInline(id){
   const aw=document.getElementById('aw-'+id);if(!aw)return;
@@ -1111,7 +1121,6 @@ async function saveAvanceInline(id){
   t.avances=avances;if(update.due_date)t.due_date=update.due_date;
   toast('✓ Avance registrado');refresh();
 }
-function togNotes(id){const e=document.getElementById('tn-'+id);if(!e)return;e.classList.toggle('open');const b=document.querySelector(`#tc-${id} .abt`);if(b)b.textContent=e.classList.contains('open')?'ocultar nota':'ver nota';}
 function renderCal(){
   document.getElementById('cal-title').textContent=MO[calM]+' '+calY;
   const first=new Date(calY,calM,1).getDay(),days=new Date(calY,calM+1,0).getDate(),today=ts();
