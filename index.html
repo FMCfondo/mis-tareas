@@ -153,8 +153,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .bcat{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
 .dtag{font-size:11px;color:var(--text3);font-weight:500;display:flex;align-items:center;gap:3px}
 .dtag.ov{color:var(--red)}
-.tca{display:flex;gap:4px;flex-shrink:0;opacity:0;transition:opacity .2s}
-.tc:hover .tca{opacity:1}
+.tca{display:flex;gap:4px;flex-shrink:0;opacity:1}
 .abt{font-size:11px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);cursor:pointer;padding:4px 10px;text-align:right;font-family:inherit;border-radius:6px;font-weight:500;transition:all .15s}
 .abt:hover{color:var(--text);border-color:var(--text3)}
 .abt.del:hover{color:var(--red);border-color:var(--red);background:var(--red-l)}
@@ -1052,7 +1051,7 @@ function tHTML(t){
   return`<div class="tc${t.done?' done':''}${ov?' ovdue':''}" id="tc-${t.id}">
     <div class="tc-strip ${q}"></div>
     <div class="tctop">
-      <button class="chk${t.done?' on':''}" onclick="toggleDone('${t.id}')"></button>
+      <button class="chk${t.done?' on':''}" data-action="done" data-id="${t.id}"></button>
       <div class="tcb">
         <div class="tct">${t.title}${t.is_recurring?` <span class="bdg brec" style="font-size:10px">↻ periódica</span>`:''}</div>
         <div class="tcm">
@@ -1064,10 +1063,10 @@ function tHTML(t){
         </div>
       </div>
       <div class="tca">
-        ${t.notes?`<button class="abt" onclick="togNotes('${t.id}')">ver nota</button>`:''}
-        <button class="abt" style="color:var(--accent)" onclick="openAvanceForm('${t.id}')">+ avance</button>
-        <button class="abt" onclick="openEdit('${t.id}')">editar</button>
-        <button class="abt del" onclick="delTask('${t.id}')">borrar</button>
+        ${t.notes?`<button class="abt" data-action="nota" data-id="${t.id}">ver nota</button>`:''}
+        <button class="abt" style="color:var(--accent)" data-action="avance" data-id="${t.id}">+ avance</button>
+        <button class="abt" data-action="editar" data-id="${t.id}">editar</button>
+        <button class="abt del" data-action="borrar" data-id="${t.id}">borrar</button>
       </div>
     </div>
     ${t.notes?`<div class="tcn" id="tn-${t.id}">${t.notes}</div>`:''}
@@ -1218,6 +1217,19 @@ function checkAlerts(){
 }
 function playBeep(){try{const c=new(window.AudioContext||window.webkitAudioContext)();[523,659,784].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(.3,c.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.15+.4);o.start(c.currentTime+i*.15);o.stop(c.currentTime+i*.15+.4);});}catch(e){}}
 function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
+// Task card event delegation — handles all buttons safely with UUID ids
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-action]');
+  if(!btn)return;
+  const action=btn.dataset.action;
+  const id=btn.dataset.id;
+  if(!action||!id)return;
+  if(action==='done')toggleDone(id);
+  else if(action==='nota')togNotes(id);
+  else if(action==='avance')openAvanceForm(id);
+  else if(action==='editar')openEdit(id);
+  else if(action==='borrar')delTask(id);
+});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeFocus();closeProcModal();}if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openModal();}});
 
 // ══ PROCESOS ══════════════════════════════════════════════
